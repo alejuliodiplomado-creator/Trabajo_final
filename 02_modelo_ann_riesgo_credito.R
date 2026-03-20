@@ -229,18 +229,17 @@ ejecutar_modelo_ann <- function(path_datos,
  # ============================================================
 # 6. Construir red nueronal
   
-  modelo <- keras_model_sequential() |>
-    layer_input(shape = ncol(X_train_scaled)) |>
-    layer_dense(units = 16, activation = "relu") |> #Primera capa oculta: 16 neuronas, activacion ReLU.
-    layer_dense(units = 8, activation = "relu") |> #Segunda capa oculta: 8 neuronas, activacion ReLU.
-    layer_dense(units = 1, activation = "sigmoid") 
-#Compilacion del modelo
-   modelo |>
-    compile(
-      optimizer = "adam", #algoritmo de optimización
-      loss = "binary_crossentropy", #función de pérdida para binaria
-      metrics = c("accuracy") #métrica de seguimiento
-    )
+  modelo <- keras_model_sequential(input_shape = c(ncol(X_train_scaled))) |>
+    layer_dense(units = 16, activation = "relu") |>
+    layer_dense(units = 8, activation = "relu") |>
+    layer_dense(units = 1, activation = "sigmoid")
+  
+  # Compilación del modelo
+  modelo |> compile(
+    optimizer = "adam",
+    loss = "binary_crossentropy",
+    metrics = c("accuracy")
+  )
 
   early_stop <- callback_early_stopping( #si el modelo no mejora se detiene
     monitor = "val_loss",
