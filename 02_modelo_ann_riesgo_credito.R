@@ -8,11 +8,10 @@
 # 1. Importacion de librerias
 # 2. Leer los archivos necesarios para el codigo
 # 3. Metricas de clasificacion
-# 4.
-# 5. 
-# 6. 
-# 7. 
-# 8. 
+# 4.Preparacion de datos para la ANN
+# 5. Test / Train 
+# 6. Construir red nueronal
+# 7. Prediccion sobre toda la base
 
 # ============================================================
 # 1. Importacion de librerias
@@ -61,12 +60,13 @@ metricas_clasificacion <- function(y_true, y_pred) {
   fp <- sum(y_true == 0 & y_pred == 1, na.rm = TRUE) #falsos positivos
   fn <- sum(y_true == 1 & y_pred == 0, na.rm = TRUE) #falsos negativos
 
-  accuracy  <- (tp + tn) / (tp + tn + fp + fn)
-  precision <- ifelse((tp + fp) == 0, 0, tp / (tp + fp))
-  recall    <- ifelse((tp + fn) == 0, 0, tp / (tp + fn))
-  specificity <- ifelse((tn + fp) == 0, 0, tn / (tn + fp))
-  f1 <- ifelse((precision + recall) == 0, 0, 2 * precision * recall / (precision + recall))
+  accuracy  <- (tp + tn) / (tp + tn + fp + fn) #para saber que % clasifico bien
+  precision <- ifelse((tp + fp) == 0, 0, tp / (tp + fp)) # para conocer la presicion de la clasificacion
+  recall    <- ifelse((tp + fn) == 0, 0, tp / (tp + fn)) #sensibilidad (de los 1 reales cuentos detecto)
+  specificity <- ifelse((tn + fp) == 0, 0, tn / (tn + fp)) #Especificidad (de los 0 reales cuantos detecto)
+  f1 <- ifelse((precision + recall) == 0, 0, 2 * precision * recall / (precision + recall)) #equilibrio entre precisión y recall.
 
+#devuelve los resultados en tabla
   tibble(
     accuracy = accuracy,
     precision = precision,
@@ -80,9 +80,10 @@ metricas_clasificacion <- function(y_true, y_pred) {
   )
 }
 
-particion_estratificada <- function(y, prop_train = 0.80, seed = 42) {
+#division entrenamiento/prueba
+particion_estratificada <- function(y, prop_train = 0.80, seed = 42) { #semilla para que los resultados pueda reproducirse
   set.seed(seed)
-  idx_0 <- which(y == 0)
+  idx_0 <- which(y == 0) #indices de la clase 0 y de la clase 1.
   idx_1 <- which(y == 1)
 
   if (length(idx_0) == 0 || length(idx_1) == 0) {
@@ -98,8 +99,11 @@ particion_estratificada <- function(y, prop_train = 0.80, seed = 42) {
   list(train = train_idx, test = test_idx)
 }
 
+# ============================================================
+# 4. Preparacion de datos para la ANN
+
 preparar_datos_ann <- function(path_datos) {
-  df <- leer_archivo_modelo(path_datos) |>
+  df <- leer_archivo_modelo(path_datos) |> #Leer y limpiar nombres de columnas
     janitor::clean_names()
 
   columnas_requeridas <- c(
@@ -117,6 +121,7 @@ preparar_datos_ann <- function(path_datos) {
     "dias_mora_promedio"
   )
 
+#si faltan datos se para la ejecucion 
   faltantes <- setdiff(columnas_requeridas, names(df))
   if (length(faltantes) > 0) {
     stop("Faltan columnas requeridas: ", paste(faltantes, collapse = ", "))
@@ -135,6 +140,7 @@ preparar_datos_ann <- function(path_datos) {
     "dias_mora_promedio"
   )
 
+#Conversión de texto a número
   for (col in columnas_numericas) {
     df[[col]] <- readr::parse_number(
       as.character(df[[col]]),
@@ -142,9 +148,10 @@ preparar_datos_ann <- function(path_datos) {
     )
   }
 
+#elimina filas con NA
   df <- df |>
     filter(if_all(all_of(columnas_numericas), ~ !is.na(.x))) |>
-    mutate(
+    mutate( # ratios
       ratio_corriente = div_segura(activos_corrientes, pasivos_corrientes),
       deuda_activos = div_segura(deuda_total, activos_totales),
       roa = div_segura(utilidad_neta, activos_totales),
@@ -152,13 +159,13 @@ preparar_datos_ann <- function(path_datos) {
       ventas = ingresos_ventas,
       crecimiento_ventas = div_segura(ingresos_ventas - ventas_pasadas, ventas_pasadas)
     ) |>
-    mutate(
+    mutate( #si alguna variable sigue teniendo infinitos, la reemplaza por NA
       across(
         c(ratio_corriente, deuda_activos, roa, ebit_intereses, ventas, crecimiento_ventas),
         ~ ifelse(is.infinite(.x), NA_real_, .x)
       )
     ) |>
-    filter(
+    filter( #filtra filas validas y elimina filas con NA
       !is.na(ratio_corriente),
       !is.na(deuda_activos),
       !is.na(roa),
@@ -166,6 +173,9 @@ preparar_datos_ann <- function(path_datos) {
       !is.na(ventas),
       !is.na(crecimiento_ventas)
     ) |>
+# variable objetivo
+#1 si dias_mora_promedio > 30
+#0 en caso contrario
     mutate(
       default = if_else(dias_mora_promedio > 30, 1, 0)
     )
@@ -179,7 +189,7 @@ ejecutar_modelo_ann <- function(path_datos,
                                 seed = 42) {
 
   dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
-  keras3::set_random_seed(seed)
+  keras3::set_random_seed(seed) #fija la semilla para que sea reproducible
 
   df <- preparar_datos_ann(path_datos)
 
@@ -192,43 +202,53 @@ ejecutar_modelo_ann <- function(path_datos,
     "crecimiento_ventas"
   )
 
-  X <- as.matrix(df[, variables_modelo])
-  y <- df$default
+# Matriz X y vector Y
+  X <- as.matrix(df[, variables_modelo]) #variables predictoras
+  y <- df$default #variable objetivo
+
+# ============================================================
+# 5. Test / Train
 
   idx <- particion_estratificada(y, prop_train = 0.80, seed = seed)
-
-  X_train <- X[idx$train, , drop = FALSE]
+#Separa los datos en entrenamiento y prueba.
+  
+  X_train <- X[idx$train, , drop = FALSE] 
   X_test  <- X[idx$test, , drop = FALSE]
   y_train <- y[idx$train]
   y_test  <- y[idx$test]
 
+#Calcula media y desviacion estandar del set de entrenamiento
   centro <- apply(X_train, 2, mean, na.rm = TRUE)
   escala <- apply(X_train, 2, sd, na.rm = TRUE)
-  escala[escala == 0] <- 1
+  escala[escala == 0] <- 1 #Si alguna desviacion es 0, la reemplaza por 1 para evitar division por cero.
 
   X_train_scaled <- scale(X_train, center = centro, scale = escala)
   X_test_scaled  <- scale(X_test, center = centro, scale = escala)
   X_total_scaled <- scale(X, center = centro, scale = escala)
 
+ # ============================================================
+# 6. Construir red nueronal
+  
   modelo <- keras_model_sequential() |>
     layer_input(shape = ncol(X_train_scaled)) |>
-    layer_dense(units = 16, activation = "relu") |>
-    layer_dense(units = 8, activation = "relu") |>
-    layer_dense(units = 1, activation = "sigmoid")
-
-  modelo |>
+    layer_dense(units = 16, activation = "relu") |> #Primera capa oculta: 16 neuronas, activacion ReLU.
+    layer_dense(units = 8, activation = "relu") |> #Segunda capa oculta: 8 neuronas, activacion ReLU.
+    layer_dense(units = 1, activation = "sigmoid") 
+#Compilacion del modelo
+   modelo |>
     compile(
-      optimizer = "adam",
-      loss = "binary_crossentropy",
-      metrics = c("accuracy")
+      optimizer = "adam", #algoritmo de optimización
+      loss = "binary_crossentropy", #función de pérdida para binaria
+      metrics = c("accuracy") #métrica de seguimiento
     )
 
-  early_stop <- callback_early_stopping(
+  early_stop <- callback_early_stopping( #si el modelo no mejora se detiene
     monitor = "val_loss",
     patience = 15L,
     restore_best_weights = TRUE
   )
 
+# Entrenamiento
   historial <- modelo |>
     fit(
       x = X_train_scaled,
@@ -240,22 +260,25 @@ ejecutar_modelo_ann <- function(path_datos,
       verbose = 1
     )
 
+#guarda el historial de entrenamiento
   historial_df <- tibble(
     epoch = seq_along(historial$metrics$loss),
     loss = unlist(historial$metrics$loss),
     val_loss = unlist(historial$metrics$val_loss)
   )
 
+#Grafico de peridida 
   grafico_loss <- ggplot(historial_df, aes(x = epoch)) +
-    geom_line(aes(y = loss), linewidth = 0.8) +
-    geom_line(aes(y = val_loss), linewidth = 0.8, linetype = "dashed") +
+    geom_line(aes(y = loss), linewidth = 0.8) + #entrenamiento
+    geom_line(aes(y = val_loss), linewidth = 0.8, linetype = "dashed") + #validacion
     labs(
       title = "Evolución de la pérdida del modelo ANN",
       x = "Época",
       y = "Loss"
     ) +
     theme_minimal()
-
+  
+#guarda el grafico
   ggplot2::ggsave(
     filename = file.path(output_dir, "historial_entrenamiento_ann.png"),
     plot = grafico_loss,
@@ -264,17 +287,22 @@ ejecutar_modelo_ann <- function(path_datos,
     dpi = 200
   )
 
+#Prediccion del Test
+#si probabilidad ≥ 0.5 → default.
+#si probabilidad < 0.5 → no default
   probabilidades_test <- as.numeric(modelo |> predict(X_test_scaled, verbose = 0))
-  pred_test <- ifelse(probabilidades_test >= umbral, 1, 0)
+  pred_test <- ifelse(probabilidades_test >= umbral, 1, 0) #Convierte esas probabilidades en clases 0/1 usando umbral 0.5.
 
   metricas <- metricas_clasificacion(y_test, pred_test)
 
+# tabla que indica las clases reales y cuales de llas se predijeron como 0 o 1 
   matriz_confusion <- tibble(
     clase_real = c("0", "1"),
     pred_0 = c(sum(y_test == 0 & pred_test == 0), sum(y_test == 1 & pred_test == 0)),
     pred_1 = c(sum(y_test == 0 & pred_test == 1), sum(y_test == 1 & pred_test == 1))
   )
 
+#resultado del test
   resultados_test <- as_tibble(X_test) |>
     setNames(variables_modelo) |>
     mutate(
@@ -283,35 +311,40 @@ ejecutar_modelo_ann <- function(path_datos,
       default_predicho = pred_test
     )
 
+# ============================================================
+# 7. Prediccion sobre toda la base
+  
   prob_total <- as.numeric(modelo |> predict(X_total_scaled, verbose = 0))
 
   resultados_totales <- df |>
     mutate(
       probabilidad_default = prob_total,
       default_predicho = if_else(probabilidad_default >= umbral, 1, 0),
-      nivel_riesgo = case_when(
+      nivel_riesgo = case_when( #clasificacion de riesgo por tramos
         probabilidad_default < 0.33 ~ "Bajo",
         probabilidad_default < 0.66 ~ "Medio",
         TRUE ~ "Alto"
       )
     )
 
+# Exportacion de resultados
   readr::write_csv(metricas, file.path(output_dir, "metricas_modelo_ann.csv"))
   readr::write_csv(matriz_confusion, file.path(output_dir, "matriz_confusion.csv"))
   readr::write_csv(resultados_test, file.path(output_dir, "resultados_test_ann.csv"))
   readr::write_csv(resultados_totales, file.path(output_dir, "empresas_score_riesgo_ann.csv"))
   readr::write_csv(historial_df, file.path(output_dir, "historial_entrenamiento_ann.csv"))
 
-  writexl::write_xlsx(
+  writexl::write_xlsx( #Exporta resultados del test en Excel.
     resultados_test,
     path = file.path(output_dir, "resultados_riesgo_credito_empresas.xlsx")
   )
 
-  writexl::write_xlsx(
+  writexl::write_xlsx( #Exporta score total en Excel.
     resultados_totales,
     path = file.path(output_dir, "empresas_con_score_riesgo.xlsx")
   )
 
+#Guarda el modelo entrenado para reutilizarlo después sin volver a entrenar
   save_model(modelo, file.path(output_dir, "modelo_ann_riesgo.keras"))
 
   saveRDS(
@@ -335,8 +368,3 @@ ejecutar_modelo_ann <- function(path_datos,
   ))
 }
 
-# Ejemplo de uso:
-# resultado_ann <- ejecutar_modelo_ann(
-#   path_datos = "data/datos_completados.xlsx",
-#   output_dir = "output"
-# )
