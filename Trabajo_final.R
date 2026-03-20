@@ -1,3 +1,5 @@
 print ("primera prueba de github")
 library(readxl)
 library(dplyr)
+library(lubridate)
+library(ggplot2)
