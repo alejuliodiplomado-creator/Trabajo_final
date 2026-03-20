@@ -9,9 +9,11 @@
 # 1. Importacion de librerias
 # 2. Leer los archivos necesarios para el codigo
 # 3. Limpiza de datos
-# 4. 
-# 5. 
-# 6. 
+# 4. Definicion del procesoI
+# 5. Integracion de datos
+# 6. scoring de riesgo
+# 7. Tablas de salida
+# 8. KPIs
 
 # ============================================================
 # 1. Importacion de librerias
@@ -49,29 +51,29 @@ reescala_segura <- function(x) {
 }
 
 # ============================================================
+#4. Definicion del proceso
 
+construir_base_cobranzas <- function(path_clientes, #archivo de clientes
+                                     path_facturas, #archivos de facturas
+                                     output_dir = "output", #carpeta donde saldran los resultados
+                                     analysis_date = Sys.Date()) { #fecha para calculos
 
-construir_base_cobranzas <- function(path_clientes,
-                                     path_facturas,
-                                     output_dir = "output",
-                                     analysis_date = Sys.Date()) {
-
-  dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
+  dir.create(output_dir, recursive = TRUE, showWarnings = FALSE) #creacion de la carpeta de salida
 
   clientes <- leer_archivo_tabular(path_clientes)
   facturas <- leer_archivo_tabular(path_facturas)
 
-  names(clientes) <- trimws(names(clientes))
+  names(clientes) <- trimws(names(clientes)) #limpiza elimina espacios en los nombres 
   names(facturas) <- trimws(names(facturas))
 
   facturas <- facturas %>%
     mutate(
-      Emisión     = suppressWarnings(lubridate::dmy(Emisión)),
+      Emisión     = suppressWarnings(lubridate::dmy(Emisión)), #convierte la fecha para evitar errores
       Vencimiento = suppressWarnings(lubridate::dmy(Vencimiento)),
       FechaPago   = suppressWarnings(lubridate::dmy(Pago))
     )
 
-  facturas <- facturas %>%
+  facturas <- facturas %>% #estado de la factura y los dias de mora
     mutate(
       Estado = case_when(
         !is.na(FechaPago) ~ "Pagado",
@@ -90,23 +92,29 @@ construir_base_cobranzas <- function(path_clientes,
       rename(Rut = `RUT Plataforma Sheriff`)
   }
 
+# ============================================================
+#5. Integracion de datos
+  
   df_cobranza <- facturas %>%
-    left_join(clientes, by = "Rut")
+    left_join(clientes, by = "Rut") #une las facturas con los clientes
 
-  resumen <- df_cobranza %>%
+  resumen <- df_cobranza %>% #agrupa por cliente 
     group_by(Rut, Cliente = Cliente.x) %>%
     summarise(
-      NumFacturas = n(),
+      NumFacturas = n(),# cuenta las facturas
       NumVencidas = sum(Estado == "Vencido"),
       MontoVencido = sum(if_else(Estado == "Vencido", Total, 0), na.rm = TRUE),
-      DiasMoraProm = mean(Dias_Mora[Estado == "Vencido"], na.rm = TRUE),
+      DiasMoraProm = mean(Dias_Mora[Estado == "Vencido"], na.rm = TRUE), #KPIs de mpra
       DiasMoraMax  = max(Dias_Mora[Estado == "Vencido"], na.rm = TRUE, default = 0),
       .groups = "drop"
     ) %>%
-    mutate(
+    mutate( #para evitar NaN
       DiasMoraProm = if_else(is.nan(DiasMoraProm), 0, DiasMoraProm)
     )
 
+# ============================================================
+#6. scoring de riesgo
+  
   resumen_scoring <- resumen %>%
     mutate(
       kpi_monto = reescala_segura(MontoVencido),
@@ -114,7 +122,7 @@ construir_base_cobranzas <- function(path_clientes,
       kpi_venc  = reescala_segura(NumVencidas),
       score_riesgo = 0.50 * kpi_monto + 0.30 * kpi_mora + 0.20 * kpi_venc
     )
-
+#clasificacion de riesgo dividio en terciles
   q1 <- quantile(resumen_scoring$score_riesgo, 0.33, na.rm = TRUE)
   q2 <- quantile(resumen_scoring$score_riesgo, 0.66, na.rm = TRUE)
 
@@ -126,6 +134,9 @@ construir_base_cobranzas <- function(path_clientes,
         TRUE ~ "Alto"
       )
     )
+  
+# ============================================================
+#7. Tablas de salida
 
   top10_monto <- resumen_scoring %>%
     arrange(desc(MontoVencido)) %>%
@@ -176,7 +187,10 @@ construir_base_cobranzas <- function(path_clientes,
       desc(DiasMoraMax)
     ) %>%
     mutate(Prioridad = row_number())
-
+  
+# ============================================================
+# 8. KPIs
+ 
   indicadores <- tibble(
     FechaEjecucion = as.character(analysis_date),
     Clientes = n_distinct(resumen_scoring$Rut),
@@ -241,9 +255,4 @@ construir_base_cobranzas <- function(path_clientes,
   ))
 }
 
-# Ejemplo de uso:
-# resultado_cobranzas <- construir_base_cobranzas(
-#   path_clientes = "data/clientes.xlsx",
-#   path_facturas = "data/facturas.xlsx",
-#   output_dir = "output"
-# )
+
