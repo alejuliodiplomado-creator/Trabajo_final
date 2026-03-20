@@ -1,0 +1,96 @@
+---
+title: "Tesis Final: Cobranzas y Riesgo de Crédito"
+author: "Alejandra Julio Ramírez"
+output:
+  ioslides_presentation:
+    widescreen: true
+---
+
+## Desafíos
+
+1. Construcción de una base analítica de cobranzas.
+   - Estado de las facturas
+   - Calcular días de mora
+   - Generar un resumen de riesgo por cliente
+
+2. Clasificación de empresas según su nivel de riesgo de crédito.
+   - Ratios financieros
+   - Mora promedio
+
+## Descripción de la solución
+
+#### Propósito
+- Mejorar la gestión de cobranzas
+- Incorporar análisis predictivo de riesgo
+- Apoyar decisiones comerciales y financieras
+
+#### Usuarios
+- Área comercial
+- Área de cobranzas
+- Jefatura financiera
+
+## Descripción de la solución
+
+### Flujo de la solución
+
+**Entradas**
+- Datos de clientes
+- Facturación
+- Información financiera
+
+**Procesamiento**
+- Limpieza y transformación
+- Cálculo de KPIs
+- Modelo ANN
+
+**Salidas**
+- Base analítica
+- Score de riesgo
+- Reportes y rankings
+
+**Consumo y usabilidad**
+- Archivos CSV / Excel
+- Uso directo por áreas de negocio
+
+**Mantenimiento**
+- Actualización periódica de datos
+- Reentrenamiento del modelo
+
+**KPIs**
+- Cobertura de datos
+- Precisión del modelo
+- Reducción de mora
+
+## MVP (Producto Mínimo Viable)
+
+### Componente 1: Cobranzas
+- Base analítica integrada
+- KPIs por cliente
+- Ranking de riesgo
+- Clientes prioritarios
+
+### Componente 2: ANN
+- Modelo de clasificación binaria
+- Variables financieras
+- Predicción de default
+- Score de riesgo
+
+### Outputs generados
+- `resumen_cobranza.csv`
+- `clientes_prioritarios.csv`
+- `metricas_modelo_ann.csv`
+- `empresas_score_riesgo_ann.csv`
+
+## MVP (Arquitectura del proceso)
+
+### Pipeline del proyecto
+
+Datos → Limpieza → KPIs → Scoring → ANN → Resultados
+
+### Ejecución
+
+```{r, eval=FALSE}
+source("run_tesis_final.R")
+```
+## Cierre
+
