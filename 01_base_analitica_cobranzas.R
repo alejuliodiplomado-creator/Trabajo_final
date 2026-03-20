@@ -1,9 +1,20 @@
 # ============================================================
 # 01_base_analitica_cobranzas.R
-# Tesis final del diplomado
-# Construcción de base analítica de cobranzas
-# Ajustado a la lógica efectiva usada en Entregable2.1
+# Trabajo final del diplomado
+# Construcción de base analítica de cobranzas mejorado
 # ============================================================
+
+
+# ESTRUCTURA DEL CÓDIGO
+# 1. Importacion de librerias
+# 2. Leer los archivos necesarios para el codigo
+# 3. Limpiza de datos
+# 4. 
+# 5. 
+# 6. 
+
+# ============================================================
+# 1. Importacion de librerias
 
 suppressPackageStartupMessages({
   library(readxl)
@@ -15,6 +26,8 @@ suppressPackageStartupMessages({
   library(tibble)
 })
 
+# ============================================================
+# 2. Leer los archivos
 leer_archivo_tabular <- function(path) {
   ext <- tolower(tools::file_ext(path))
   if (ext %in% c("xlsx", "xls")) {
@@ -26,11 +39,17 @@ leer_archivo_tabular <- function(path) {
   }
 }
 
+# ============================================================
+#3. Limpiza de datos
+
 reescala_segura <- function(x) {
   x <- ifelse(is.na(x), 0, x)
   if (length(unique(x)) <= 1) return(rep(0, length(x)))
   scales::rescale(x, to = c(0, 1))
 }
+
+# ============================================================
+
 
 construir_base_cobranzas <- function(path_clientes,
                                      path_facturas,
