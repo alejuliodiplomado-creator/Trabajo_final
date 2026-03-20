@@ -206,6 +206,86 @@ La lógica integradora del trabajo consiste en que ambos componentes responden a
 
 De esta manera, el proyecto no presenta dos piezas aisladas, sino una única propuesta de valor para la organización.
 
+# 7.5 Cronograma del proyecto
+
+A continuación se presenta una planificación general del desarrollo del proyecto:
+
+```{r cronograma, echo=FALSE}
+library(ggplot2)
+library(dplyr)
+
+cronograma <- data.frame(
+  Etapa = c(
+    "Levantamiento de requerimientos",
+    "Construcción base cobranzas",
+    "Generación de KPIs y scoring",
+    "Desarrollo modelo ANN (Python)",
+    "Migración modelo ANN a R",
+    "Integración del pipeline",
+    "Validación y ajustes",
+    "Documentación final"
+  ),
+  Inicio = as.Date(c(
+    "2025-11-01","2025-11-10","2025-11-20","2025-12-01",
+    "2025-12-10","2025-12-20","2026-01-05","2026-01-15"
+  )),
+  Fin = as.Date(c(
+    "2025-11-10","2025-11-20","2025-11-30","2025-12-10",
+    "2025-12-20","2025-12-30","2026-01-15","2026-01-25"
+  ))
+)
+
+#ordenar por fecha y fijar niveles
+cronograma <- cronograma %>%
+  arrange(desc(Inicio)) %>%
+  mutate(Etapa = factor(Etapa, levels = Etapa))
+
+ggplot(cronograma) +
+  geom_segment(aes(x = Inicio, xend = Fin, y = Etapa, yend = Etapa),
+               linewidth = 6) +
+  labs(
+    title = "Cronograma del Proyecto",
+    x = "Fecha",
+    y = "Etapas"
+  ) +
+  theme_minimal()
+```
+# 7.6 Diagrama de flujo de la solución
+
+El siguiente diagrama representa el flujo completo del pipeline analítico desarrollado:
+
+```{r diagrama_flujo, echo=FALSE}
+library(DiagrammeR)
+
+grViz("
+digraph flujo {
+
+  rankdir = LR;
+
+  node [shape = rectangle, style = filled, fillcolor = lightgrey];
+
+  Datos1 [label = 'Datos Clientes'];
+  Datos2 [label = 'Datos Facturación'];
+  Datos3 [label = 'Datos Financieros'];
+
+  Limpieza [label = 'Limpieza y preparación'];
+  Cobranzas [label = 'Base Analítica de Cobranzas'];
+  KPIs [label = 'KPIs y Scoring'];
+  ANN [label = 'Modelo ANN'];
+  Output [label = 'Outputs y Reportes'];
+
+  Datos1 -> Limpieza;
+  Datos2 -> Limpieza;
+  Datos3 -> Limpieza;
+
+  Limpieza -> Cobranzas;
+  Cobranzas -> KPIs;
+  KPIs -> ANN;
+  ANN -> Output;
+}
+")
+```
+
 # 8. MVP propuesto
 
 ## 8.1 MVP de cobranzas
@@ -336,7 +416,7 @@ resultado_ann <- ejecutar_modelo_ann(
 
 Este trabajo presenta algunas limitaciones propias del alcance MVP:
 
-- El score de cobranzas es heurístico y no representa una probabilidad estadística de incumplimiento.
+- El score de cobranzas no representa una probabilidad estadística de incumplimiento.
 - El target del modelo ANN depende de una regla observable de mora promedio mayor a 30 días.
 - No se cuenta aún con variables enriquecidas de comportamiento histórico, contacto, pagos parciales o renegociaciones.
 - La validación se basa en una muestra interna y no reemplaza una política formal de crédito.
