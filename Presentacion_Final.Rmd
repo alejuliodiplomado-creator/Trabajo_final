@@ -78,16 +78,6 @@ digraph flujo {
 - `metricas_modelo_ann.csv`
 - `empresas_score_riesgo_ann.csv`
 
-## MVP (Arquitectura del proceso)
 
-### Pipeline del proyecto
-
-Datos → Limpieza → KPIs → Scoring → ANN → Resultados
-
-### Ejecución
-
-```{r, eval=FALSE}
-source("run_tesis_final.R")
-```
 ## Cierre
 
