@@ -4440,48 +4440,72 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; }
           </hgroup>
   </slide>
 
-<slide class=""><hgroup><h2>Desafíos</h2></hgroup><article  id="desafíos">
+<slide class=""><hgroup><h2>Desafíos y solución propuesta</h2></hgroup><article  id="desafíos-y-solución-propuesta">
 
-<ol>
-<li>Construcción de una base analítica de cobranzas.
-
-<ul>
-<li>Estado de las facturas</li>
-<li>Calcular días de mora</li>
-<li>Generar un resumen de riesgo por cliente</li>
-</ul></li>
-<li>Clasificación de empresas según su nivel de riesgo de crédito.
-
-<ul>
-<li>Ratios financieros</li>
-<li>Mora promedio</li>
-</ul></li>
-</ol>
+<table class = 'rmdtable'>
+<col width="16.129032%" />
+<col width="43.548387%" />
+<col width="40.322581%" />
+<tr class="header">
+<th align="left">Dimensión</th>
+<th align="left">Cobranzas (Base Analítica)</th>
+<th align="left">Riesgo de Crédito (ANN)</th>
+</tr>
+<tr class="odd">
+<td align="left">Problema</td>
+<td align="left">Falta de visibilidad de la cartera</td>
+<td align="left">No existe clasificación de riesgo</td>
+</tr>
+<tr class="even">
+<td align="left">Objetivo</td>
+<td align="left">Gestionar mora y priorizar clientes</td>
+<td align="left">Predecir riesgo de default</td>
+</tr>
+<tr class="odd">
+<td align="left">Datos</td>
+<td align="left">Facturación + clientes</td>
+<td align="left">Datos financieros</td>
+</tr>
+<tr class="even">
+<td align="left">Procesamiento</td>
+<td align="left">Estado de facturas<br>Días de mora<br>KPIs por cliente</td>
+<td align="left">Ratios financieros<br>Variable default<br>Modelo ANN</td>
+</tr>
+<tr class="odd">
+<td align="left">Resultado</td>
+<td align="left">Base analítica<br>Ranking<br>Score</td>
+<td align="left">Probabilidad default<br>Clasificación</td>
+</tr>
+<tr class="even">
+<td align="left">Uso</td>
+<td align="left">Gestión de cobranza</td>
+<td align="left">Evaluación de riesgo</td>
+</tr>
+</table>
 
 </article></slide><slide class=""><hgroup><h2>Descripción de la solución</h2></hgroup><article  id="descripción-de-la-solución">
 
-<h4>Propósito</h4>
-
-<ul>
-<li>Mejorar la gestión de cobranzas</li>
-<li>Incorporar análisis predictivo de riesgo</li>
-<li>Apoyar decisiones comerciales y financieras</li>
-</ul>
-
-<h4>Usuarios</h4>
-
-<ul>
-<li>Área comercial</li>
-<li>Área de cobranzas</li>
-<li>Jefatura financiera</li>
-</ul>
-
-</article></slide><slide class=""><hgroup><h2>Descripción de la solución</h2></hgroup><article  id="descripción-de-la-solución-1">
+<table class = 'rmdtable'>
+<col width="45.454545%" />
+<col width="54.545455%" />
+<tr class="header">
+<th align="left">Elemento</th>
+<th align="left">Descripción</th>
+</tr>
+<tr class="odd">
+<td align="left">Propósito</td>
+<td align="left">Mejorar gestión de cobranzas e incorporar análisis predictivo</td>
+</tr>
+<tr class="even">
+<td align="left">Usuarios</td>
+<td align="left">Área comercial, cobranzas y jefatura financiera</td>
+</tr>
+</table>
 
 <h3>Flujo de la solución</h3>
 
-<div class="grViz html-widget html-fill-item" id="htmlwidget-063b1d47626924b03d19" style="width:720px;height:432px;"></div>
-<script type="application/json" data-for="htmlwidget-063b1d47626924b03d19">{"x":{"diagram":"\ndigraph flujo {\n\n  rankdir = LR;\n\n  node [shape = rectangle, style = filled, fillcolor = lightgrey];\n\n  Datos1 [label = \"Datos Clientes\"];\n  Datos2 [label = \"Datos Facturación\"];\n  Datos3 [label = \"Datos Financieros\"];\n\n  Limpieza [label = \"Limpieza y preparación\"];\n  Cobranzas [label = \"Base Analítica de Cobranzas\"];\n  KPIs [label = \"KPIs y Scoring\"];\n  ANN [label = \"Modelo ANN\"];\n  Output [label = \"Outputs y Reportes\"];\n\n  Datos1 -> Limpieza;\n  Datos2 -> Limpieza;\n  Datos3 -> Limpieza;\n\n  Limpieza -> Cobranzas;\n  Cobranzas -> KPIs;\n  KPIs -> ANN;\n  ANN -> Output;\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-3a35f51f3df4c850a45f" style="width:720px;height:432px;"></div>
+<script type="application/json" data-for="htmlwidget-3a35f51f3df4c850a45f">{"x":{"diagram":"\ndigraph flujo {\n\n  rankdir = LR;\n\n  node [shape = rectangle, style = filled, fillcolor = lightgrey];\n\n  Datos1 [label = \"Datos Clientes\"];\n  Datos2 [label = \"Datos Facturación\"];\n  Datos3 [label = \"Datos Financieros\"];\n\n  Limpieza [label = \"Limpieza y preparación\"];\n  Cobranzas [label = \"Base Analítica de Cobranzas\"];\n  KPIs [label = \"KPIs y Scoring\"];\n  ANN [label = \"Modelo ANN\"];\n  Output [label = \"Outputs y Reportes\"];\n\n  Datos1 -> Limpieza;\n  Datos2 -> Limpieza;\n  Datos3 -> Limpieza;\n\n  Limpieza -> Cobranzas;\n  Cobranzas -> KPIs;\n  KPIs -> ANN;\n  ANN -> Output;\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 
 </article></slide><slide class=""><hgroup><h2>MVP (Producto Mínimo Viable)</h2></hgroup><article  id="mvp-producto-mínimo-viable">
 

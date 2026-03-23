@@ -6,33 +6,26 @@ output:
     widescreen: true
 ---
 
-## Desafíos
+## Desafíos y solución propuesta
 
-1. Construcción de una base analítica de cobranzas.
-   - Estado de las facturas
-   - Calcular días de mora
-   - Generar un resumen de riesgo por cliente
-
-2. Clasificación de empresas según su nivel de riesgo de crédito.
-   - Ratios financieros
-   - Mora promedio
-
-## Descripción de la solución
-
-#### Propósito
-- Mejorar la gestión de cobranzas
-- Incorporar análisis predictivo de riesgo
-- Apoyar decisiones comerciales y financieras
-
-#### Usuarios
-- Área comercial
-- Área de cobranzas
-- Jefatura financiera
+| Dimensión | Cobranzas (Base Analítica) | Riesgo de Crédito (ANN) |
+|----------|---------------------------|-------------------------|
+| Problema | Falta de visibilidad de la cartera | No existe clasificación de riesgo |
+| Objetivo | Gestionar mora y priorizar clientes | Predecir riesgo de default |
+| Datos | Facturación + clientes | Datos financieros |
+| Procesamiento | Estado de facturas<br>Días de mora<br>KPIs por cliente | Ratios financieros<br>Variable default<br>Modelo ANN |
+| Resultado | Base analítica<br>Ranking<br>Score | Probabilidad default<br>Clasificación |
+| Uso | Gestión de cobranza | Evaluación de riesgo |
 
 ## Descripción de la solución
+
+| Elemento | Descripción |
+|----------|------------|
+| Propósito | Mejorar gestión de cobranzas e incorporar análisis predictivo |
+| Usuarios | Área comercial, cobranzas y jefatura financiera |
+
 
 ### Flujo de la solución
-
 ```{r diagrama_flujo, echo=FALSE}
 library(DiagrammeR)
 
