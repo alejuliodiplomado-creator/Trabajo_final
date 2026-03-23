@@ -1,0 +1,335 @@
+---
+title: "Reporte Ejecutivo - Base Analítica de Cobranzas"
+author: "Alejandra Julio Ramírez"
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+    theme: readable
+    df_print: paged
+params:
+  ruta_output: "D:/R/Trabajo_Final/Trabajo_final/output"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE
+)
+
+library(readr)
+library(dplyr)
+library(ggplot2)
+library(knitr)
+library(scales)
+library(tidyr)
+
+ruta <- params$ruta_output
+
+leer_csv_seguro <- function(nombre_archivo) {
+  archivo <- file.path(ruta, nombre_archivo)
+  if (!file.exists(archivo)) {
+    stop(paste("No se encontró el archivo:", archivo))
+  }
+  readr::read_csv(archivo, show_col_types = FALSE)
+}
+
+fmt_clp <- function(x) scales::dollar(x, prefix = "$", big.mark = ".", decimal.mark = ",", accuracy = 1)
+fmt_num <- function(x) scales::number(x, accuracy = 1, big.mark = ".", decimal.mark = ",")
+fmt_pct <- function(x) scales::percent(x, accuracy = 0.1, decimal.mark = ",")
+```
+
+# 1. Objetivo del reporte
+
+Este reporte muestra y explica los resultados generados por la **base analítica de cobranzas**. Su propósito es traducir los archivos técnicos del proceso en información útil para el área financiera y comercial.
+
+En particular, se revisan los principales outputs generados por el script:
+
+- `indicadores_cartera.csv`
+- `resumen_cobranza.csv`
+- `base_cobranza.csv`
+- `top10_facturas_vencidas.csv`
+- `top10_mayor_riesgo.csv`
+- `top10_mas_facturas.csv`
+- `top10_unificado.csv`
+- `clientes_criticos_3mas_vencidas.csv`
+- `clientes_prioritarios.csv`
+
+# 2. Carga de resultados
+
+```{r carga}
+indicadores <- leer_csv_seguro("indicadores_cartera.csv")
+resumen_cobranza <- leer_csv_seguro("resumen_cobranza.csv")
+base_cobranza <- leer_csv_seguro("base_cobranza.csv")
+top10_vencidas <- leer_csv_seguro("top10_facturas_vencidas.csv")
+top10_mayor_riesgo <- leer_csv_seguro("top10_mayor_riesgo.csv")
+top10_mas_facturas <- leer_csv_seguro("top10_mas_facturas.csv")
+top10_unificado <- leer_csv_seguro("top10_unificado.csv")
+clientes_criticos <- leer_csv_seguro("clientes_criticos_3mas_vencidas.csv")
+clientes_prioritarios <- leer_csv_seguro("clientes_prioritarios.csv")
+```
+
+En esta sección se cargan todos los archivos generados por el proceso de cobranzas. Si alguno no existe, significa que el script no se ejecutó completamente o que la ruta de salida no es correcta.
+
+# 3. Indicadores generales de cartera
+
+```{r indicadores-tabla}
+indicadores_mostrar <- indicadores %>%
+  mutate(
+    MontoVencido = fmt_clp(MontoVencido),
+    Clientes = fmt_num(Clientes),
+    Facturas = fmt_num(Facturas),
+    FacturasVencidas = fmt_num(FacturasVencidas),
+    DiasMoraPromedioCartera = round(DiasMoraPromedioCartera, 1)
+  )
+
+kable(indicadores_mostrar, caption = "Indicadores generales de la cartera")
+```
+
+## ¿Qué significa esta tabla?
+
+Esta tabla resume el estado global de la cartera al momento de la ejecución:
+
+- **Clientes**: número de clientes analizados.
+- **Facturas**: total de documentos incluidos.
+- **FacturasVencidas**: cantidad de facturas que ya están vencidas.
+- **MontoVencido**: exposición monetaria actualmente vencida.
+- **DiasMoraPromedioCartera**: atraso promedio entre las facturas vencidas.
+
+ **Interpretación para negocio:**  
+Esta es la vista más ejecutiva del proceso. Permite responder rápidamente cuánto riesgo operativo hay hoy en la cartera y cuánta presión existe sobre cobranza.
+
+# 4. Base consolidada de cobranza
+
+## ¿Qué muestra este archivo?
+
+`base_cobranza.csv` corresponde a la unión entre facturas y clientes. Aquí se observan variables documentales y comerciales, junto con campos calculados como:
+
+- **Estado** de la factura
+- **Dias_Mora**
+- datos del cliente asociados al RUT
+
+ **Interpretación:**  
+Esta base permite bajar al detalle de cada documento. Es útil para revisar casos puntuales, validar resultados y realizar seguimiento operativo.
+
+## Distribución del estado de facturas
+
+```{r estado-facturas}
+base_cobranza %>%
+  count(Estado) %>%
+  ggplot(aes(x = Estado, y = n)) +
+  geom_col() +
+  labs(
+    title = "Distribución de facturas por estado",
+    x = "Estado de la factura",
+    y = "Cantidad"
+  ) +
+  theme_minimal()
+```
+
+ Este gráfico permite ver cuántas facturas están **pagadas**, **vencidas** o **por vencer**.  
+Si la barra de vencidas es alta, existe mayor urgencia de gestión.
+
+# 5. Resumen por cliente y scoring de riesgo
+
+```{r resumen-cobranza-tabla}
+kable(head(resumen_cobranza, 10), caption = "Primeras 10 filas del resumen de cobranza por cliente")
+```
+
+## ¿Qué muestra esta tabla?
+
+`resumen_cobranza.csv` resume la situación de cada cliente con variables clave:
+
+- **NumFacturas**
+- **NumVencidas**
+- **MontoVencido**
+- **DiasMoraProm**
+- **DiasMoraMax**
+- **score_riesgo**
+- **Riesgo** (Bajo, Medio, Alto)
+
+ **Interpretación:**  
+Este archivo traduce el detalle documental a una mirada por cliente. Es la base para priorizar gestión y segmentar cartera.
+
+## Distribución del nivel de riesgo
+
+```{r riesgo-distribucion}
+resumen_cobranza %>%
+  count(Riesgo) %>%
+  kable(caption = "Cantidad de clientes por nivel de riesgo")
+```
+
+```{r riesgo-grafico}
+ggplot(resumen_cobranza, aes(x = Riesgo)) +
+  geom_bar() +
+  labs(
+    title = "Distribución de clientes por nivel de riesgo",
+    x = "Nivel de riesgo",
+    y = "Cantidad de clientes"
+  ) +
+  theme_minimal()
+```
+
+ Este gráfico muestra cómo se distribuyen los clientes entre **riesgo bajo, medio y alto**.  
+Si hay una alta concentración en riesgo alto, el área financiera debería revisar exposición y el área comercial ajustar seguimiento.
+
+# 6. Top 10 clientes con más facturas vencidas
+
+```{r top10-vencidas}
+kable(top10_vencidas, caption = "Top 10 clientes con mayor cantidad de facturas vencidas")
+```
+
+## ¿Cómo interpretar esta tabla?
+
+Aquí se identifican los clientes con mayor volumen de documentos vencidos.
+
+ **Uso práctico:**
+- priorizar gestión de cobranza,
+- identificar clientes con recurrencia de atraso,
+- detectar cuentas que consumen mucho esfuerzo operativo.
+
+# 7. Top 10 clientes con mayor riesgo
+
+```{r top10-riesgo}
+kable(top10_mayor_riesgo, caption = "Top 10 clientes con mayor riesgo")
+```
+
+## ¿Cómo interpretar esta tabla?
+
+Esta tabla combina monto vencido, número de facturas vencidas y mora promedio, pero enfocada en los clientes clasificados con mayor severidad.
+
+ **Uso práctico:**
+- identificar clientes que deberían revisarse primero,
+- evaluar contacto preventivo,
+- reforzar control de cartera con foco en exposición.
+
+# 8. Top 10 clientes con más facturas
+
+```{r top10-facturas}
+kable(top10_mas_facturas, caption = "Top 10 clientes con mayor número de facturas")
+```
+
+## ¿Qué aporta esta tabla?
+
+No necesariamente son los más riesgosos, pero sí los que tienen mayor volumen documental.
+
+ **Interpretación:**  
+Sirve para distinguir clientes con alta actividad del negocio. Algunos pueden tener muchas facturas sin ser problemáticos, pero merecen monitoreo por su peso operativo.
+
+# 9. Ranking unificado de clientes relevantes
+
+```{r top10-unificado}
+kable(top10_unificado, caption = "Top 10 unificado de clientes relevantes")
+```
+
+## ¿Qué muestra?
+
+Este ranking combina varios criterios a la vez:
+
+- nivel de riesgo,
+- monto vencido,
+- número de facturas vencidas,
+- total de facturas.
+
+ **Interpretación:**  
+Es una tabla útil para gestión ejecutiva porque resume, en un solo ranking, los clientes que concentran mayor atención desde varias dimensiones.
+
+## Visualización del monto vencido de clientes más expuestos
+
+```{r grafico-top10}
+top10_unificado %>%
+  ggplot(aes(x = reorder(Cliente, MontoVencido), y = MontoVencido, fill = Riesgo)) +
+  geom_col() +
+  coord_flip() +
+  scale_y_continuous(labels = label_number(big.mark = ".", decimal.mark = ",")) +
+  labs(
+    title = "Clientes con mayor monto vencido",
+    x = "Cliente",
+    y = "Monto vencido"
+  ) +
+  theme_minimal()
+```
+
+ Este gráfico permite ver, de forma visual, qué clientes concentran más deuda vencida y bajo qué nivel de riesgo se encuentran.
+
+# 10. Clientes críticos
+
+```{r clientes-criticos}
+kable(clientes_criticos, caption = "Clientes críticos con 3 o más facturas vencidas")
+```
+
+## ¿Qué significa?
+
+Aquí se listan clientes que tienen **al menos 3 facturas vencidas**, por lo que representan un foco claro de atención.
+
+ **Interpretación para negocio:**
+- posible deterioro de pago,
+- mayor urgencia de contacto,
+- revisión prioritaria por parte de cobranza y finanzas.
+
+# 11. Clientes prioritarios
+
+```{r clientes-prioritarios}
+kable(clientes_prioritarios, caption = "Clientes prioritarios para gestión")
+```
+
+## ¿Por qué esta tabla es clave?
+
+`clientes_prioritarios.csv` reúne a los clientes más importantes de gestionar, considerando la combinación de criticidad y riesgo.
+
+ **Uso práctico:**
+- definir agenda de cobranza,
+- ordenar seguimiento comercial,
+- establecer foco diario o semanal del equipo.
+
+## Prioridades por nivel de riesgo
+
+```{r prioridades-riesgo}
+ggplot(clientes_prioritarios, aes(x = reorder(Cliente, Prioridad), y = Prioridad, fill = Riesgo)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Orden de prioridad de gestión",
+    x = "Cliente",
+    y = "Prioridad"
+  ) +
+  theme_minimal()
+```
+
+ Este gráfico muestra el orden de gestión sugerido. Mientras más arriba esté el cliente, mayor atención debería recibir.
+
+# 12. Recomendaciones para toma de decisiones
+
+## 12.1 Área de cobranzas
+
+- usar `clientes_prioritarios.csv` como lista de gestión,
+- revisar `clientes_criticos_3mas_vencidas.csv` para contacto urgente,
+- apoyarse en `top10_facturas_vencidas.csv` para distribuir esfuerzos.
+
+## 12.2 Área financiera
+
+- monitorear `indicadores_cartera.csv` para seguir exposición vencida,
+- revisar clientes de `top10_mayor_riesgo.csv` y `top10_unificado.csv`,
+- complementar análisis con monto vencido y mora máxima.
+
+## 12.3 Área comercial
+
+- identificar clientes con señales tempranas de deterioro,
+- coordinar con cobranza acciones preventivas,
+- usar la clasificación de riesgo como apoyo a decisiones sobre continuidad, condiciones o seguimiento.
+
+# 13. Conclusión
+
+La base analítica de cobranzas transforma datos operacionales en un conjunto de salidas accionables para negocio.
+
+En particular:
+
+- `indicadores_cartera.csv` resume la situación general de la cartera,
+- `base_cobranza.csv` permite revisar el detalle documental,
+- `resumen_cobranza.csv` consolida KPIs por cliente,
+- los rankings top ayudan a priorizar exposición y mora,
+- `clientes_criticos_3mas_vencidas.csv` y `clientes_prioritarios.csv` orientan la gestión concreta.
+
+De esta forma, el proceso no solo genera archivos, sino una herramienta útil para mejorar foco, trazabilidad y toma de decisiones.
