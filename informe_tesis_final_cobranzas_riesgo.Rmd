@@ -250,6 +250,7 @@ ggplot(cronograma) +
   ) +
   theme_minimal()
 ```
+
 # 7.6 Diagrama de flujo de la solución
 
 El siguiente diagrama representa el flujo completo del pipeline analítico desarrollado:

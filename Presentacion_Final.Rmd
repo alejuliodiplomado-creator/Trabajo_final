@@ -33,33 +33,37 @@ output:
 
 ### Flujo de la solución
 
-**Entradas**
-- Datos de clientes
-- Facturación
-- Información financiera
+```{r diagrama_flujo, echo=FALSE}
+library(DiagrammeR)
 
-**Procesamiento**
-- Limpieza y transformación
-- Cálculo de KPIs
-- Modelo ANN
+grViz("
+digraph flujo {
 
-**Salidas**
-- Base analítica
-- Score de riesgo
-- Reportes y rankings
+  rankdir = LR;
 
-**Consumo y usabilidad**
-- Archivos CSV / Excel
-- Uso directo por áreas de negocio
+  node [shape = rectangle, style = filled, fillcolor = lightgrey];
 
-**Mantenimiento**
-- Actualización periódica de datos
-- Reentrenamiento del modelo
+  Datos1 [label = 'Datos Clientes'];
+  Datos2 [label = 'Datos Facturación'];
+  Datos3 [label = 'Datos Financieros'];
 
-**KPIs**
-- Cobertura de datos
-- Precisión del modelo
-- Reducción de mora
+  Limpieza [label = 'Limpieza y preparación'];
+  Cobranzas [label = 'Base Analítica de Cobranzas'];
+  KPIs [label = 'KPIs y Scoring'];
+  ANN [label = 'Modelo ANN'];
+  Output [label = 'Outputs y Reportes'];
+
+  Datos1 -> Limpieza;
+  Datos2 -> Limpieza;
+  Datos3 -> Limpieza;
+
+  Limpieza -> Cobranzas;
+  Cobranzas -> KPIs;
+  KPIs -> ANN;
+  ANN -> Output;
+}
+")
+```
 
 ## MVP (Producto Mínimo Viable)
 
