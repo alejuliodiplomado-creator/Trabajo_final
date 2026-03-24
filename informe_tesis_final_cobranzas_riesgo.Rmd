@@ -66,7 +66,7 @@ ste producto permite responder preguntas como:
  - ¿Cómo se distribuye el riesgo dentro de la cartera?
 
 
-# Etapas de la solución
+## Etapas de la solución
 
 ```{r, echo=FALSE}
 library(DiagrammeR)
@@ -89,12 +89,99 @@ digraph flujo {
 ")
 ```
 
-# Outputs
+# Propósito, usuarios y decisiones habilitadas
 
-- resumen_cobranza.csv
-- clientes_prioritarios.csv
-- indicadores_cartera.csv
+## Propósito
 
-# Conclusión
+Transformar datos operacionales de clientes y facturación en insumos analíticos accionables para mejorar la gestión de cobranza.
 
-La solución permite mejorar la priorización y reducir riesgo en cartera.
+
+## Usuarios
+
+ - Área de cobranzas
+ - Área comercial
+ - Jefatura financiera
+ 
+## Decisiones habilitadas
+ 
+ - Priorización diaria de clientes para gestión de cobranza.
+ - Segmentación de cartera según severidad de mora.
+ - Identificación de clientes críticos.
+ - Seguimiento de exposición vencida y focos de gestión.
+ 
+# Datos de entrada
+ 
+## Archivo de clientes
+ 
+ Variables esperadas:
+
+ - Rut o columna equivalente
+ - Cliente o nombre del cliente
+ - otros atributos comerciales, si estuvieran disponibles
+ 
+## Archivo de facturas
+ 
+ Variables esperadas:
+
+ - Rut
+ - Emisión
+ - Vencimiento
+ - Pago
+ - Total
+ 
+# Metodología
+ 
+La construcción de la base analítica de cobranzas sigue las siguientes etapas:
+
+```{r diagrama_flujo, echo=FALSE}
+library(DiagrammeR)
+
+grViz("
+digraph flujo {
+
+  rankdir = LR;
+
+  node [shape = rectangle, style = filled, fillcolor = lightgrey];
+
+  A1 [label = 'Clientes'];
+  A2 [label = 'Facturas'];
+
+  B [label = 'Limpieza y estandarización'];
+  C1 [label = 'Clasificación de facturas'];
+  C2 [label = 'Cálculo de mora'];
+  D [label = 'Integración'];
+  E [label = 'Resumen por cliente'];
+  F1 [label = 'KPI de cartera'];
+  F2 [label = 'Score de riesgo'];
+
+  A1 -> B;
+  A2 -> B;
+
+  B -> C1;
+  B -> C2;
+
+  C1 -> D;
+  C2 -> D;
+
+  D -> E;
+
+  E -> F1;
+  E -> F2;
+}
+")
+```
+
+ - Lectura de archivos de clientes y facturas.
+ - Limpieza y estandarización de nombres de columnas.
+ - Conversión de fechas al formato fecha.
+ - Clasificación del estado de cada factura en:
+   - Pagado
+   - Vencido
+   - Por vencer
+ - Cálculo de días de mora.
+ - Integración de clientes y facturas.
+ - Construcción de un resumen por cliente.
+ - Cálculo de KPIs operativos.
+ - Generación de score de riesgo.
+ - Clasificación de clientes en riesgo bajo, medio y alto.
+ - Exportación de tablas y visualizaciones.

@@ -2970,8 +2970,8 @@ calcula mora y genera un ranking de prioridad.</em></p>
 <div id="etapas-de-la-solución" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span> Etapas de la
 solución</h2>
-<div class="grViz html-widget html-fill-item" id="htmlwidget-dc9f7fc607f29feec3ba" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-dc9f7fc607f29feec3ba">{"x":{"diagram":"\ndigraph flujo {\n\n  rankdir = LR;\n\n  node [shape = rectangle, style = filled, fontsize=11];\n\n  A [label = \"Integración de datos\", fillcolor = lightblue];\n  B [label = \"Limpieza\", fillcolor = lightblue];\n  C [label = \"Cálculo de mora\", fillcolor = lightyellow];\n  D [label = \"Score de riesgo\", fillcolor = orange];\n  E [label = \"Clasificación de clientes\", fillcolor = white];\n\n  A -> B -> C -> D -> E;\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-d42fc133cf8251934165" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-d42fc133cf8251934165">{"x":{"diagram":"\ndigraph flujo {\n\n  rankdir = LR;\n\n  node [shape = rectangle, style = filled, fontsize=11];\n\n  A [label = \"Integración de datos\", fillcolor = lightblue];\n  B [label = \"Limpieza\", fillcolor = lightblue];\n  C [label = \"Cálculo de mora\", fillcolor = lightyellow];\n  D [label = \"Score de riesgo\", fillcolor = orange];\n  E [label = \"Clasificación de clientes\", fillcolor = white];\n\n  A -> B -> C -> D -> E;\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="propósito-usuarios-y-decisiones-habilitadas" class="section level1" number="5">
@@ -3030,8 +3030,8 @@ facturas</h2>
 <h1><span class="header-section-number">7</span> Metodología</h1>
 <p>La construcción de la base analítica de cobranzas sigue las
 siguientes etapas:</p>
-<div class="grViz html-widget html-fill-item" id="htmlwidget-8153c9e1646d02acc138" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-8153c9e1646d02acc138">{"x":{"diagram":"\ndigraph flujo {\n\n  rankdir = LR;\n\n  node [shape = rectangle, style = filled, fillcolor = lightgrey];\n\n  A1 [label = \"Clientes\"];\n  A2 [label = \"Facturas\"];\n\n  B [label = \"Limpieza y estandarización\"];\n  C1 [label = \"Clasificación de facturas\"];\n  C2 [label = \"Cálculo de mora\"];\n  D [label = \"Integración\"];\n  E [label = \"Resumen por cliente\"];\n  F1 [label = \"KPI de cartera\"];\n  F2 [label = \"Score de riesgo\"];\n\n  A1 -> B;\n  A2 -> B;\n\n  B -> C1;\n  B -> C2;\n\n  C1 -> D;\n  C2 -> D;\n\n  D -> E;\n\n  E -> F1;\n  E -> F2;\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-e07c9e79cf10dd976527" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-e07c9e79cf10dd976527">{"x":{"diagram":"\ndigraph flujo {\n\n  rankdir = LR;\n\n  node [shape = rectangle, style = filled, fillcolor = lightgrey];\n\n  A1 [label = \"Clientes\"];\n  A2 [label = \"Facturas\"];\n\n  B [label = \"Limpieza y estandarización\"];\n  C1 [label = \"Clasificación de facturas\"];\n  C2 [label = \"Cálculo de mora\"];\n  D [label = \"Integración\"];\n  E [label = \"Resumen por cliente\"];\n  F1 [label = \"KPI de cartera\"];\n  F2 [label = \"Score de riesgo\"];\n\n  A1 -> B;\n  A2 -> B;\n\n  B -> C1;\n  B -> C2;\n\n  C1 -> D;\n  C2 -> D;\n\n  D -> E;\n\n  E -> F1;\n  E -> F2;\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <ul>
 <li>Lectura de archivos de clientes y facturas.</li>
 <li>Limpieza y estandarización de nombres de columnas.</li>
