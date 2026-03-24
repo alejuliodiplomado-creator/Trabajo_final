@@ -27,7 +27,7 @@ El resultado es un producto analítico orientado a negocio, diseñado para entre
 
 # Problema de negocio
 
-*Actualmente no existe un mecanismo claro para priorizar la gestión de cobranzas.* que permita responder de manera rápida y consistente preguntas como:
+*Actualmente no existe un mecanismo claro para priorizar la gestión de cobranzas* que permita responder de manera rápida y consistente preguntas como:
 
  - Qué clientes tienen mayor monto vencido
  - Qué clientes concentran más facturas vencidas
