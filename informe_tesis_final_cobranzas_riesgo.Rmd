@@ -36,10 +36,34 @@ El resultado es un producto analítico orientado a negocio, diseñado para entre
 
 Actualmente esto genera una gestión más manual, menor trazabilidad y menor capacidad de priorización. Frente a esta necesidad, se desarrolla una solución en R que transforma datos operacionales en información accionable para negocio.
 
+# Objetivos
+
+## Objetivo general
+
+Diseñar una base analítica de cobranzas en R que permita consolidar información de clientes y facturas, calcular indicadores de mora y generar una priorización de clientes para la gestión de cobranza.
+
+### Objetivos específicos
+
+ - Integrar y depurar datos de clientes y facturación.
+ - Identificar el estado de cada factura.
+ - Calcular días de mora a nivel documental.
+ - Consolidar indicadores por cliente.
+ - Construir un score de riesgo operativo.
+ - Clasificar clientes por nivel de riesgo.
+ - Generar salidas útiles para gestión y seguimiento.
 
 # Solución
+*La solución considera un único producto analítico: la base analítica de cobranzas.*
 
-Se construye una base analítica que integra clientes y facturas, calcula mora y genera un ranking de prioridad.
+*Se construye una base analítica que integra clientes y facturas, calcula mora y genera un ranking de prioridad.*
+
+ste producto permite responder preguntas como:
+
+ - ¿Qué clientes tienen mayor monto vencido?
+ - ¿Qué clientes tienen más facturas vencidas?
+ - ¿Qué clientes son críticos por recurrencia de mora?
+ - ¿A quién conviene priorizar hoy en la gestión?
+ - ¿Cómo se distribuye el riesgo dentro de la cartera?
 
 # Metodología
 

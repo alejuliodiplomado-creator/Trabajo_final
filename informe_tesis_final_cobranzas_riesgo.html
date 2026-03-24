@@ -1642,10 +1642,17 @@ de Cobranzas</h1>
 <ul>
 <li><a href="#resumen-ejecutivo" id="toc-resumen-ejecutivo"><span class="toc-section-number">1</span> Resumen ejecutivo</a></li>
 <li><a href="#problema-de-negocio" id="toc-problema-de-negocio"><span class="toc-section-number">2</span> Problema de negocio</a></li>
-<li><a href="#soluci%C3%B3n" id="toc-solución"><span class="toc-section-number">3</span> Solución</a></li>
-<li><a href="#metodolog%C3%ADa" id="toc-metodología"><span class="toc-section-number">4</span> Metodología</a></li>
-<li><a href="#outputs" id="toc-outputs"><span class="toc-section-number">5</span> Outputs</a></li>
-<li><a href="#conclusi%C3%B3n" id="toc-conclusión"><span class="toc-section-number">6</span> Conclusión</a></li>
+<li><a href="#objetivos" id="toc-objetivos"><span class="toc-section-number">3</span> Objetivos</a>
+<ul>
+<li><a href="#objetivo-general" id="toc-objetivo-general"><span class="toc-section-number">3.1</span> Objetivo general</a>
+<ul>
+<li><a href="#objetivos-espec%C3%ADficos" id="toc-objetivos-específicos"><span class="toc-section-number">3.1.1</span> Objetivos específicos</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#soluci%C3%B3n" id="toc-solución"><span class="toc-section-number">4</span> Solución</a></li>
+<li><a href="#metodolog%C3%ADa" id="toc-metodología"><span class="toc-section-number">5</span> Metodología</a></li>
+<li><a href="#outputs" id="toc-outputs"><span class="toc-section-number">6</span> Outputs</a></li>
+<li><a href="#conclusi%C3%B3n" id="toc-conclusión"><span class="toc-section-number">7</span> Conclusión</a></li>
 </ul>
 </div>
 
@@ -1677,13 +1684,45 @@ menor capacidad de priorización. Frente a esta necesidad, se desarrolla
 una solución en R que transforma datos operacionales en información
 accionable para negocio.</p>
 </div>
-<div id="solución" class="section level1" number="3">
-<h1><span class="header-section-number">3</span> Solución</h1>
-<p>Se construye una base analítica que integra clientes y facturas,
-calcula mora y genera un ranking de prioridad.</p>
+<div id="objetivos" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Objetivos</h1>
+<div id="objetivo-general" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Objetivo general</h2>
+<p>Diseñar una base analítica de cobranzas en R que permita consolidar
+información de clientes y facturas, calcular indicadores de mora y
+generar una priorización de clientes para la gestión de cobranza.</p>
+<div id="objetivos-específicos" class="section level3" number="3.1.1">
+<h3><span class="header-section-number">3.1.1</span> Objetivos
+específicos</h3>
+<ul>
+<li>Integrar y depurar datos de clientes y facturación.</li>
+<li>Identificar el estado de cada factura.</li>
+<li>Calcular días de mora a nivel documental.</li>
+<li>Consolidar indicadores por cliente.</li>
+<li>Construir un score de riesgo operativo.</li>
+<li>Clasificar clientes por nivel de riesgo.</li>
+<li>Generar salidas útiles para gestión y seguimiento.</li>
+</ul>
 </div>
-<div id="metodología" class="section level1" number="4">
-<h1><span class="header-section-number">4</span> Metodología</h1>
+</div>
+</div>
+<div id="solución" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Solución</h1>
+<p><em>La solución considera un único producto analítico: la base
+analítica de cobranzas.</em></p>
+<p><em>Se construye una base analítica que integra clientes y facturas,
+calcula mora y genera un ranking de prioridad.</em></p>
+<p>ste producto permite responder preguntas como:</p>
+<ul>
+<li>¿Qué clientes tienen mayor monto vencido?</li>
+<li>¿Qué clientes tienen más facturas vencidas?</li>
+<li>¿Qué clientes son críticos por recurrencia de mora?</li>
+<li>¿A quién conviene priorizar hoy en la gestión?</li>
+<li>¿Cómo se distribuye el riesgo dentro de la cartera?</li>
+</ul>
+</div>
+<div id="metodología" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Metodología</h1>
 <ul>
 <li>Integración de datos</li>
 <li>Limpieza</li>
@@ -1692,16 +1731,16 @@ calcula mora y genera un ranking de prioridad.</p>
 <li>Clasificación de clientes</li>
 </ul>
 </div>
-<div id="outputs" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> Outputs</h1>
+<div id="outputs" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Outputs</h1>
 <ul>
 <li>resumen_cobranza.csv</li>
 <li>clientes_prioritarios.csv</li>
 <li>indicadores_cartera.csv</li>
 </ul>
 </div>
-<div id="conclusión" class="section level1" number="6">
-<h1><span class="header-section-number">6</span> Conclusión</h1>
+<div id="conclusión" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> Conclusión</h1>
 <p>La solución permite mejorar la priorización y reducir riesgo en
 cartera.</p>
 </div>
