@@ -65,13 +65,28 @@ ste producto permite responder preguntas como:
  - ¿A quién conviene priorizar hoy en la gestión?
  - ¿Cómo se distribuye el riesgo dentro de la cartera?
 
-# Metodología
 
-- Integración de datos
-- Limpieza
-- Cálculo de mora
-- Score de riesgo
-- Clasificación de clientes
+# Etapas de la solución
+
+```{r, echo=FALSE}
+library(DiagrammeR)
+
+grViz("
+digraph flujo {
+  rankdir = TB;
+
+  node [shape = rectangle, style = filled, fillcolor = lightblue];
+
+  A [label = '1. Integración de datos'];
+  B [label = '2. Limpieza'];
+  C [label = '3. Cálculo de mora'];
+  D [label = '4. Score de riesgo'];
+  E [label = '5. Clasificación de clientes'];
+
+  A -> B -> C -> D -> E;
+}
+")
+```
 
 # Outputs
 
