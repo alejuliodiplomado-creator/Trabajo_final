@@ -284,19 +284,6 @@ kable(clientes_prioritarios, caption = "Clientes prioritarios para gestión")
 - ordenar seguimiento comercial,
 - establecer foco diario o semanal del equipo.
 
-## Prioridades por nivel de riesgo
-
-```{r prioridades-riesgo}
-ggplot(clientes_prioritarios, aes(x = reorder(Cliente, Prioridad), y = Prioridad, fill = Riesgo)) +
-  geom_col() +
-  coord_flip() +
-  labs(
-    title = "Orden de prioridad de gestión",
-    x = "Cliente",
-    y = "Prioridad"
-  ) +
-  theme_minimal()
-```
 
  Este gráfico muestra el orden de gestión sugerido. Mientras más arriba esté el cliente, mayor atención debería recibir.
 
