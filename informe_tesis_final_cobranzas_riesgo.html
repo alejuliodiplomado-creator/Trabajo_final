@@ -2899,7 +2899,36 @@ habilitadas</a>
 <li><a href="#archivo-de-clientes" id="toc-archivo-de-clientes"><span class="toc-section-number">6.1</span> Archivo de clientes</a></li>
 <li><a href="#archivo-de-facturas" id="toc-archivo-de-facturas"><span class="toc-section-number">6.2</span> Archivo de facturas</a></li>
 </ul></li>
-<li><a href="#metodolog%C3%ADa" id="toc-metodología"><span class="toc-section-number">7</span> Metodología</a></li>
+<li><a href="#metodolog%C3%ADa" id="toc-metodología"><span class="toc-section-number">7</span> Metodología</a>
+<ul>
+<li><a href="#variables-de-salida" id="toc-variables-de-salida"><span class="toc-section-number">7.1</span> Variables de salida</a>
+<ul>
+<li><a href="#a-nivel-factura" id="toc-a-nivel-factura"><span class="toc-section-number">7.1.1</span> A nivel factura:</a></li>
+<li><a href="#a-nivel-cliente" id="toc-a-nivel-cliente"><span class="toc-section-number">7.1.2</span> A nivel cliente:</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#l%C3%B3gica-del-modelo-de-cobranzas" id="toc-lógica-del-modelo-de-cobranzas"><span class="toc-section-number">8</span> Lógica del modelo de cobranzas</a>
+<ul>
+<li><a href="#score-de-riesgo" id="toc-score-de-riesgo"><span class="toc-section-number">8.1</span> Score de riesgo</a></li>
+</ul></li>
+<li><a href="#reporte-ejecutivo-de-resultados" id="toc-reporte-ejecutivo-de-resultados"><span class="toc-section-number">9</span> Reporte ejecutivo de
+resultados</a></li>
+<li><a href="#resultados-esperados" id="toc-resultados-esperados"><span class="toc-section-number">10</span> Resultados esperados</a></li>
+<li><a href="#kpis-del-producto-de-datos" id="toc-kpis-del-producto-de-datos"><span class="toc-section-number">11</span> KPIs del producto de datos</a>
+<ul>
+<li><a href="#kpis-de-calidad-y-disponibilidad" id="toc-kpis-de-calidad-y-disponibilidad"><span class="toc-section-number">11.1</span> KPIs de calidad y
+disponibilidad</a></li>
+<li><a href="#kpis-de-uso-e-impacto" id="toc-kpis-de-uso-e-impacto"><span class="toc-section-number">11.2</span> KPIs de uso e impacto</a></li>
+</ul></li>
+<li><a href="#despliegue-y-monitoreo" id="toc-despliegue-y-monitoreo"><span class="toc-section-number">12</span> Despliegue y monitoreo</a>
+<ul>
+<li><a href="#despliegue-propuesto" id="toc-despliegue-propuesto"><span class="toc-section-number">12.1</span> Despliegue propuesto</a></li>
+<li><a href="#monitoreo-t%C3%A9cnico" id="toc-monitoreo-técnico"><span class="toc-section-number">12.2</span> Monitoreo técnico</a></li>
+<li><a href="#monitoreo-de-negocio" id="toc-monitoreo-de-negocio"><span class="toc-section-number">12.3</span> Monitoreo de negocio</a></li>
+</ul></li>
+<li><a href="#discusi%C3%B3n-y-limitaciones" id="toc-discusión-y-limitaciones"><span class="toc-section-number">13</span> Discusión y limitaciones</a></li>
+<li><a href="#conclusiones" id="toc-conclusiones"><span class="toc-section-number">14</span> Conclusiones</a></li>
+<li><a href="#pr%C3%B3ximas-mejoras" id="toc-próximas-mejoras"><span class="toc-section-number">15</span> Próximas mejoras</a></li>
 </ul>
 </div>
 
@@ -2959,7 +2988,7 @@ específicos</h3>
 analítica de cobranzas.</em></p>
 <p><em>Se construye una base analítica que integra clientes y facturas,
 calcula mora y genera un ranking de prioridad.</em></p>
-<p>ste producto permite responder preguntas como:</p>
+<p>este producto permite responder preguntas como:</p>
 <ul>
 <li>¿Qué clientes tienen mayor monto vencido?</li>
 <li>¿Qué clientes tienen más facturas vencidas?</li>
@@ -2970,8 +2999,8 @@ calcula mora y genera un ranking de prioridad.</em></p>
 <div id="etapas-de-la-solución" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span> Etapas de la
 solución</h2>
-<div class="grViz html-widget html-fill-item" id="htmlwidget-d42fc133cf8251934165" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-d42fc133cf8251934165">{"x":{"diagram":"\ndigraph flujo {\n\n  rankdir = LR;\n\n  node [shape = rectangle, style = filled, fontsize=11];\n\n  A [label = \"Integración de datos\", fillcolor = lightblue];\n  B [label = \"Limpieza\", fillcolor = lightblue];\n  C [label = \"Cálculo de mora\", fillcolor = lightyellow];\n  D [label = \"Score de riesgo\", fillcolor = orange];\n  E [label = \"Clasificación de clientes\", fillcolor = white];\n\n  A -> B -> C -> D -> E;\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-02defb26d17206034846" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-02defb26d17206034846">{"x":{"diagram":"\ndigraph flujo {\n\n  rankdir = LR;\n\n  node [shape = rectangle, style = filled, fontsize=11];\n\n  A [label = \"Integración de datos\", fillcolor = lightblue];\n  B [label = \"Limpieza\", fillcolor = lightblue];\n  C [label = \"Cálculo de mora\", fillcolor = lightyellow];\n  D [label = \"Score de riesgo\", fillcolor = orange];\n  E [label = \"Clasificación de clientes\", fillcolor = white];\n\n  A -> B -> C -> D -> E;\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <div id="propósito-usuarios-y-decisiones-habilitadas" class="section level1" number="5">
@@ -3030,8 +3059,8 @@ facturas</h2>
 <h1><span class="header-section-number">7</span> Metodología</h1>
 <p>La construcción de la base analítica de cobranzas sigue las
 siguientes etapas:</p>
-<div class="grViz html-widget html-fill-item" id="htmlwidget-e07c9e79cf10dd976527" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-e07c9e79cf10dd976527">{"x":{"diagram":"\ndigraph flujo {\n\n  rankdir = LR;\n\n  node [shape = rectangle, style = filled, fillcolor = lightgrey];\n\n  A1 [label = \"Clientes\"];\n  A2 [label = \"Facturas\"];\n\n  B [label = \"Limpieza y estandarización\"];\n  C1 [label = \"Clasificación de facturas\"];\n  C2 [label = \"Cálculo de mora\"];\n  D [label = \"Integración\"];\n  E [label = \"Resumen por cliente\"];\n  F1 [label = \"KPI de cartera\"];\n  F2 [label = \"Score de riesgo\"];\n\n  A1 -> B;\n  A2 -> B;\n\n  B -> C1;\n  B -> C2;\n\n  C1 -> D;\n  C2 -> D;\n\n  D -> E;\n\n  E -> F1;\n  E -> F2;\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-b5f987ffae9aad29a05e" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-b5f987ffae9aad29a05e">{"x":{"diagram":"\ndigraph flujo {\n\n  rankdir = LR;\n\n  node [shape = rectangle, style = filled, fillcolor = lightgrey];\n\n  A1 [label = \"Clientes\"];\n  A2 [label = \"Facturas\"];\n\n  B [label = \"Limpieza y estandarización\"];\n  C1 [label = \"Clasificación de facturas\"];\n  C2 [label = \"Cálculo de mora\"];\n  D [label = \"Integración\"];\n  E [label = \"Resumen por cliente\"];\n  F1 [label = \"KPI de cartera\"];\n  F2 [label = \"Score de riesgo\"];\n\n  A1 -> B;\n  A2 -> B;\n\n  B -> C1;\n  B -> C2;\n\n  C1 -> D;\n  C2 -> D;\n\n  D -> E;\n\n  E -> F1;\n  E -> F2;\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 <ul>
 <li>Lectura de archivos de clientes y facturas.</li>
 <li>Limpieza y estandarización de nombres de columnas.</li>
@@ -3049,6 +3078,282 @@ siguientes etapas:</p>
 <li>Generación de score de riesgo.</li>
 <li>Clasificación de clientes en riesgo bajo, medio y alto.</li>
 <li>Exportación de tablas y visualizaciones.</li>
+</ul>
+<div id="variables-de-salida" class="section level2" number="7.1">
+<h2><span class="header-section-number">7.1</span> Variables de
+salida</h2>
+<div id="a-nivel-factura" class="section level3" number="7.1.1">
+<h3><span class="header-section-number">7.1.1</span> A nivel
+factura:</h3>
+<ul>
+<li>Estado de la Factura (Pagada, vencida o por vencer)</li>
+<li>Dias_Mora</li>
+</ul>
+</div>
+<div id="a-nivel-cliente" class="section level3" number="7.1.2">
+<h3><span class="header-section-number">7.1.2</span> A nivel
+cliente:</h3>
+<ul>
+<li>NumFacturas</li>
+<li>NumVencidas</li>
+<li>MontoVencido</li>
+<li>DiasMoraProm</li>
+<li>DiasMoraMax</li>
+<li>score_riesgo</li>
+<li>Riesgo</li>
+<li>Prioridad</li>
+</ul>
+</div>
+</div>
+</div>
+<div id="lógica-del-modelo-de-cobranzas" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> Lógica del modelo de
+cobranzas</h1>
+<p>El script 01_base_analitica_cobranzas.R implementa una función
+principal llamada construir_base_cobranzas, la cual:</p>
+<ul>
+<li>lee archivos tabulares en formato Excel o CSV</li>
+<li>limpia los datos</li>
+<li>clasifica facturas según su estado</li>
+<li>resume la información a nivel cliente</li>
+<li>construye un score de riesgo operativo</li>
+<li>genera rankings y listas de priorización</li>
+<li>exporta los resultados al directorio output/</li>
+</ul>
+<div id="score-de-riesgo" class="section level2" number="8.1">
+<h2><span class="header-section-number">8.1</span> Score de riesgo</h2>
+<p>El score se construye a partir de tres componentes reescalados:</p>
+<table>
+<colgroup>
+<col width="38%" />
+<col width="53%" />
+<col width="7%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Componente</th>
+<th align="left">Descripción</th>
+<th align="left">Peso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Monto vencido</td>
+<td align="left">Total de deuda vencida por cliente</td>
+<td align="left">50%</td>
+</tr>
+<tr class="even">
+<td align="left">Días de mora promedio</td>
+<td align="left">Promedio de días de atraso</td>
+<td align="left">30%</td>
+</tr>
+<tr class="odd">
+<td align="left">Número de facturas vencidas</td>
+<td align="left">Cantidad de facturas en estado vencido</td>
+<td align="left">20%</td>
+</tr>
+</tbody>
+</table>
+<p>Luego, la clasificación de riesgo se realiza en terciles:</p>
+<ul>
+<li>Bajo</li>
+<li>Medio</li>
+<li>Alto</li>
+</ul>
+</div>
+</div>
+<div id="reporte-ejecutivo-de-resultados" class="section level1" number="9">
+<h1><span class="header-section-number">9</span> Reporte ejecutivo de
+resultados</h1>
+<p>El archivo reporte_base_analitica_cobranzas.Rmd traduce los outputs
+del proceso a una lectura ejecutiva para negocio.</p>
+<p>En particular, presenta:</p>
+<ul>
+<li>indicadores generales de cartera</li>
+<li>base consolidada de cobranza</li>
+<li>resumen por cliente</li>
+<li>distribución del riesgo</li>
+<li>top de clientes con más facturas vencidas</li>
+<li>top de clientes con mayor riesgo</li>
+<li>ranking unificado</li>
+<li>clientes críticos</li>
+<li>clientes prioritarios</li>
+<li>recomendaciones de uso para cobranzas, finanzas y comercial</li>
+</ul>
+</div>
+<div id="resultados-esperados" class="section level1" number="10">
+<h1><span class="header-section-number">10</span> Resultados
+esperados</h1>
+<p>Se espera disponer de una cartera analítica priorizada que
+permita:</p>
+<ul>
+<li>identificar clientes críticos</li>
+<li>focalizar la gestión diaria</li>
+<li>cuantificar exposición vencida</li>
+<li>ordenar la agenda de cobranza</li>
+<li>mejorar la trazabilidad de la cartera</li>
+</ul>
+</div>
+<div id="kpis-del-producto-de-datos" class="section level1" number="11">
+<h1><span class="header-section-number">11</span> KPIs del producto de
+datos</h1>
+<div id="kpis-de-calidad-y-disponibilidad" class="section level2" number="11.1">
+<h2><span class="header-section-number">11.1</span> KPIs de calidad y
+disponibilidad</h2>
+<table>
+<colgroup>
+<col width="40%" />
+<col width="47%" />
+<col width="11%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">KPI</th>
+<th align="left">Definición</th>
+<th align="left">Meta inicial</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Cobertura de clientes con identificador válido</td>
+<td align="left">% de clientes utilizables en el proceso</td>
+<td align="left">&gt; 95%</td>
+</tr>
+<tr class="even">
+<td align="left">Cobertura de facturas con fechas válidas</td>
+<td align="left">% de documentos con fechas correctamente
+interpretadas</td>
+<td align="left">&gt; 98%</td>
+</tr>
+<tr class="odd">
+<td align="left">Tasa de ejecución exitosa</td>
+<td align="left">% de corridas sin error</td>
+<td align="left">&gt; 95%</td>
+</tr>
+<tr class="even">
+<td align="left">Generación de outputs esperados</td>
+<td align="left">% de archivos producidos correctamente</td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="kpis-de-uso-e-impacto" class="section level2" number="11.2">
+<h2><span class="header-section-number">11.2</span> KPIs de uso e
+impacto</h2>
+<table>
+<colgroup>
+<col width="40%" />
+<col width="42%" />
+<col width="17%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">KPI</th>
+<th align="left">Definición</th>
+<th align="left">Meta inicial</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">% de gestión dirigida por priorización analítica</td>
+<td align="left">Casos gestionados usando ranking generado</td>
+<td align="left">&gt; 70%</td>
+</tr>
+<tr class="even">
+<td align="left">Evolución del monto vencido</td>
+<td align="left">Tendencia del monto vencido en cartera</td>
+<td align="left">A la baja</td>
+</tr>
+<tr class="odd">
+<td align="left">Uso de clientes prioritarios</td>
+<td align="left">% de gestión basada en
+<code>clientes_prioritarios.csv</code></td>
+<td align="left">&gt; 70%</td>
+</tr>
+<tr class="even">
+<td align="left">Tiempo de preparación de información</td>
+<td align="left">Tiempo requerido para preparar insumos de cobranza</td>
+<td align="left">Reducción relevante</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="despliegue-y-monitoreo" class="section level1" number="12">
+<h1><span class="header-section-number">12</span> Despliegue y
+monitoreo</h1>
+<div id="despliegue-propuesto" class="section level2" number="12.1">
+<h2><span class="header-section-number">12.1</span> Despliegue
+propuesto</h2>
+<p>Se recomienda un despliegue simple y realista:</p>
+<ul>
+<li>Mantener archivos de entrada actualizados en data/.</li>
+<li>Ejecutar 01_base_analitica_cobranzas.R en R.</li>
+<li>Generar salidas en output/.</li>
+<li>Consumir los resultados mediante el reporte ejecutivo y los CSV de
+gestión.</li>
+</ul>
+</div>
+<div id="monitoreo-técnico" class="section level2" number="12.2">
+<h2><span class="header-section-number">12.2</span> Monitoreo
+técnico</h2>
+<ul>
+<li>errores de ejecución</li>
+<li>columnas faltantes</li>
+<li>fechas inválidas</li>
+<li>valores nulos críticos</li>
+<li>tiempos de ejecución</li>
+</ul>
+</div>
+<div id="monitoreo-de-negocio" class="section level2" number="12.3">
+<h2><span class="header-section-number">12.3</span> Monitoreo de
+negocio</h2>
+<ul>
+<li>evolución de monto vencido</li>
+<li>clientes con mayor riesgo</li>
+<li>clientes críticos con 3 o más vencidas</li>
+<li>distribución de la cartera por nivel de riesgo</li>
+<li>efectividad de la gestión sobre clientes prioritarios</li>
+</ul>
+</div>
+</div>
+<div id="discusión-y-limitaciones" class="section level1" number="13">
+<h1><span class="header-section-number">13</span> Discusión y
+limitaciones</h1>
+<p>Este trabajo presenta algunas limitaciones propias del alcance
+MVP:</p>
+<ul>
+<li>el score de cobranzas no representa una probabilidad estadística de
+incumplimiento</li>
+<li>depende de la calidad de los datos de entrada</li>
+<li>no incorpora todavía historial de pagos, renegociaciones o
+contacto</li>
+<li>la priorización se basa en reglas operativas, no en un modelo
+predictivo de comportamiento futuro.</li>
+</ul>
+<p>Aun así, la propuesta constituye una mejora concreta respecto de una
+gestión manual, al consolidar información dispersa en un producto
+analítico reproducible y utilizable por negocio.</p>
+</div>
+<div id="conclusiones" class="section level1" number="14">
+<h1><span class="header-section-number">14</span> Conclusiones</h1>
+<p>La tesis final desarrolla una solución aplicada para la gestión de
+cartera, centrada en la construcción de una base analítica de cobranzas
+en R.</p>
+<p>Desde la perspectiva del negocio, el proyecto permite mejorar foco,
+trazabilidad y capacidad de priorización. Desde la perspectiva técnica,
+demuestra integración de datos, cálculo de indicadores, construcción de
+score y generación de reportes accionables.</p>
+</div>
+<div id="próximas-mejoras" class="section level1" number="15">
+<h1><span class="header-section-number">15</span> Próximas mejoras</h1>
+<ul>
+<li>incorporar historial de pagos</li>
+<li>agregar seguimiento de recuperaciones</li>
+<li>complementar con dashboard en Shiny o Power BI</li>
+<li>automatizar la actualización periódica</li>
+<li>enriquecer el score con nueva evidencia operativa</li>
 </ul>
 </div>
 

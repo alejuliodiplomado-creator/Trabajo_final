@@ -57,7 +57,7 @@ Diseñar una base analítica de cobranzas en R que permita consolidar informaci�
 
 *Se construye una base analítica que integra clientes y facturas, calcula mora y genera un ranking de prioridad.*
 
-ste producto permite responder preguntas como:
+este producto permite responder preguntas como:
 
  - ¿Qué clientes tienen mayor monto vencido?
  - ¿Qué clientes tienen más facturas vencidas?
@@ -185,3 +185,149 @@ digraph flujo {
  - Generación de score de riesgo.
  - Clasificación de clientes en riesgo bajo, medio y alto.
  - Exportación de tablas y visualizaciones.
+ 
+## Variables de salida
+ 
+### A nivel factura:
+
+ - Estado de la Factura (Pagada, vencida o por vencer)
+ - Dias_Mora
+
+### A nivel cliente:
+
+ - NumFacturas
+ - NumVencidas
+ - MontoVencido
+ - DiasMoraProm
+ - DiasMoraMax
+ - score_riesgo
+ - Riesgo
+ - Prioridad
+ 
+# Lógica del modelo de cobranzas
+
+El script 01_base_analitica_cobranzas.R implementa una función principal llamada construir_base_cobranzas, la cual:
+
+ - lee archivos tabulares en formato Excel o CSV
+ - limpia los datos
+ - clasifica facturas según su estado
+ - resume la información a nivel cliente
+ - construye un score de riesgo operativo
+ - genera rankings y listas de priorización
+ - exporta los resultados al directorio output/
+ 
+## Score de riesgo
+
+El score se construye a partir de tres componentes reescalados:
+
+| Componente                     | Descripción                              | Peso |
+|:------------------------------|:------------------------------------------|:-----|
+| Monto vencido                 | Total de deuda vencida por cliente        | 50%  |
+| Días de mora promedio         | Promedio de días de atraso                | 30%  |
+| Número de facturas vencidas   | Cantidad de facturas en estado vencido    | 20%  |
+
+Luego, la clasificación de riesgo se realiza en terciles:
+
+ - Bajo
+ - Medio
+ - Alto
+ 
+# Reporte ejecutivo de resultados
+
+El archivo reporte_base_analitica_cobranzas.Rmd traduce los outputs del proceso a una lectura ejecutiva para negocio.
+
+En particular, presenta:
+
+ - indicadores generales de cartera
+ - base consolidada de cobranza
+ - resumen por cliente
+ - distribución del riesgo
+ - top de clientes con más facturas vencidas
+ - top de clientes con mayor riesgo
+ - ranking unificado
+ - clientes críticos
+ - clientes prioritarios
+ - recomendaciones de uso para cobranzas, finanzas y comercial
+ 
+# Resultados esperados
+
+Se espera disponer de una cartera analítica priorizada que permita:
+
+ - identificar clientes críticos
+ - focalizar la gestión diaria
+ - cuantificar exposición vencida
+ - ordenar la agenda de cobranza
+ - mejorar la trazabilidad de la cartera
+ 
+# KPIs del producto de datos
+ 
+## KPIs de calidad y disponibilidad
+ 
+ 
+| KPI                                            | Definición                                              | Meta inicial |
+|:-----------------------------------------------|:--------------------------------------------------------|:-------------|
+| Cobertura de clientes con identificador válido | % de clientes utilizables en el proceso                | > 95%        |
+| Cobertura de facturas con fechas válidas       | % de documentos con fechas correctamente interpretadas | > 98%        |
+| Tasa de ejecución exitosa                      | % de corridas sin error                                | > 95%        |
+| Generación de outputs esperados                | % de archivos producidos correctamente   
+
+## KPIs de uso e impacto
+
+| KPI                                              | Definición                                         | Meta inicial        |
+|:-------------------------------------------------|:---------------------------------------------------|:--------------------|
+| % de gestión dirigida por priorización analítica | Casos gestionados usando ranking generado          | > 70%               |
+| Evolución del monto vencido                      | Tendencia del monto vencido en cartera             | A la baja           |
+| Uso de clientes prioritarios                     | % de gestión basada en `clientes_prioritarios.csv` | > 70%               |
+| Tiempo de preparación de información             | Tiempo requerido para preparar insumos de cobranza | Reducción relevante |
+
+# Despliegue y monitoreo
+
+## Despliegue propuesto
+
+Se recomienda un despliegue simple y realista:
+
+ - Mantener archivos de entrada actualizados en data/.
+ - Ejecutar 01_base_analitica_cobranzas.R en R.
+ - Generar salidas en output/.
+ - Consumir los resultados mediante el reporte ejecutivo y los CSV de gestión.
+ 
+## Monitoreo técnico
+
+ - errores de ejecución
+ - columnas faltantes
+ - fechas inválidas
+ - valores nulos críticos
+ - tiempos de ejecución
+ 
+## Monitoreo de negocio
+
+ - evolución de monto vencido
+ - clientes con mayor riesgo
+ - clientes críticos con 3 o más vencidas
+ - distribución de la cartera por nivel de riesgo
+ - efectividad de la gestión sobre clientes prioritarios
+ 
+# Discusión y limitaciones
+
+Este trabajo presenta algunas limitaciones propias del alcance MVP:
+
+ - el score de cobranzas no representa una probabilidad estadística de incumplimiento
+ - depende de la calidad de los datos de entrada
+ - no incorpora todavía historial de pagos, renegociaciones o contacto
+ - la priorización se basa en reglas operativas, no en un modelo predictivo de comportamiento futuro.
+
+Aun así, la propuesta constituye una mejora concreta respecto de una gestión manual, al consolidar información dispersa en un producto analítico reproducible y utilizable por negocio.
+
+# Conclusiones
+
+La tesis final desarrolla una solución aplicada para la gestión de cartera, centrada en la construcción de una base analítica de cobranzas en R.
+
+Desde la perspectiva del negocio, el proyecto permite mejorar foco, trazabilidad y capacidad de priorización. Desde la perspectiva técnica, demuestra integración de datos, cálculo de indicadores, construcción de score y generación de reportes accionables.
+
+# Próximas mejoras
+
+ - incorporar historial de pagos
+ - agregar seguimiento de recuperaciones
+ - complementar con dashboard en Shiny o Power BI
+ - automatizar la actualización periódica
+ - enriquecer el score con nueva evidencia operativa
