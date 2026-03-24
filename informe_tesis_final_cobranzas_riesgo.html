@@ -2883,11 +2883,23 @@ de Cobranzas</h1>
 <li><a href="#objetivos-espec%C3%ADficos" id="toc-objetivos-específicos"><span class="toc-section-number">3.1.1</span> Objetivos específicos</a></li>
 </ul></li>
 </ul></li>
-<li><a href="#soluci%C3%B3n" id="toc-solución"><span class="toc-section-number">4</span> Solución</a></li>
-<li><a href="#etapas-de-la-soluci%C3%B3n" id="toc-etapas-de-la-solución"><span class="toc-section-number">5</span>
-Etapas de la solución</a></li>
-<li><a href="#outputs" id="toc-outputs"><span class="toc-section-number">6</span> Outputs</a></li>
-<li><a href="#conclusi%C3%B3n" id="toc-conclusión"><span class="toc-section-number">7</span> Conclusión</a></li>
+<li><a href="#soluci%C3%B3n" id="toc-solución"><span class="toc-section-number">4</span> Solución</a>
+<ul>
+<li><a href="#etapas-de-la-soluci%C3%B3n" id="toc-etapas-de-la-solución"><span class="toc-section-number">4.1</span> Etapas de la solución</a></li>
+</ul></li>
+<li><a href="#prop%C3%B3sito-usuarios-y-decisiones-habilitadas" id="toc-propósito-usuarios-y-decisiones-habilitadas"><span class="toc-section-number">5</span> Propósito, usuarios y decisiones
+habilitadas</a>
+<ul>
+<li><a href="#prop%C3%B3sito" id="toc-propósito"><span class="toc-section-number">5.1</span> Propósito</a></li>
+<li><a href="#usuarios" id="toc-usuarios"><span class="toc-section-number">5.2</span> Usuarios</a></li>
+<li><a href="#decisiones-habilitadas" id="toc-decisiones-habilitadas"><span class="toc-section-number">5.3</span> Decisiones habilitadas</a></li>
+</ul></li>
+<li><a href="#datos-de-entrada" id="toc-datos-de-entrada"><span class="toc-section-number">6</span> Datos de entrada</a>
+<ul>
+<li><a href="#archivo-de-clientes" id="toc-archivo-de-clientes"><span class="toc-section-number">6.1</span> Archivo de clientes</a></li>
+<li><a href="#archivo-de-facturas" id="toc-archivo-de-facturas"><span class="toc-section-number">6.2</span> Archivo de facturas</a></li>
+</ul></li>
+<li><a href="#metodolog%C3%ADa" id="toc-metodología"><span class="toc-section-number">7</span> Metodología</a></li>
 </ul>
 </div>
 
@@ -2955,25 +2967,89 @@ calcula mora y genera un ranking de prioridad.</em></p>
 <li>¿A quién conviene priorizar hoy en la gestión?</li>
 <li>¿Cómo se distribuye el riesgo dentro de la cartera?</li>
 </ul>
+<div id="etapas-de-la-solución" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Etapas de la
+solución</h2>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-dc9f7fc607f29feec3ba" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-dc9f7fc607f29feec3ba">{"x":{"diagram":"\ndigraph flujo {\n\n  rankdir = LR;\n\n  node [shape = rectangle, style = filled, fontsize=11];\n\n  A [label = \"Integración de datos\", fillcolor = lightblue];\n  B [label = \"Limpieza\", fillcolor = lightblue];\n  C [label = \"Cálculo de mora\", fillcolor = lightyellow];\n  D [label = \"Score de riesgo\", fillcolor = orange];\n  E [label = \"Clasificación de clientes\", fillcolor = white];\n\n  A -> B -> C -> D -> E;\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="etapas-de-la-solución" class="section level1" number="5">
-<h1><span class="header-section-number">5</span> Etapas de la
-solución</h1>
-<div class="grViz html-widget html-fill-item" id="htmlwidget-cc6b02e98b90ed924f66" style="width:672px;height:480px;"></div>
-<script type="application/json" data-for="htmlwidget-cc6b02e98b90ed924f66">{"x":{"diagram":"\ndigraph flujo {\n  rankdir = TB;\n\n  node [shape = rectangle, style = filled, fillcolor = lightblue];\n\n  A [label = \"1. Integración de datos\"];\n  B [label = \"2. Limpieza\"];\n  C [label = \"3. Cálculo de mora\"];\n  D [label = \"4. Score de riesgo\"];\n  E [label = \"5. Clasificación de clientes\"];\n\n  A -> B -> C -> D -> E;\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
-<div id="outputs" class="section level1" number="6">
-<h1><span class="header-section-number">6</span> Outputs</h1>
+<div id="propósito-usuarios-y-decisiones-habilitadas" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Propósito, usuarios y
+decisiones habilitadas</h1>
+<div id="propósito" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> Propósito</h2>
+<p>Transformar datos operacionales de clientes y facturación en insumos
+analíticos accionables para mejorar la gestión de cobranza.</p>
+</div>
+<div id="usuarios" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> Usuarios</h2>
 <ul>
-<li>resumen_cobranza.csv</li>
-<li>clientes_prioritarios.csv</li>
-<li>indicadores_cartera.csv</li>
+<li>Área de cobranzas</li>
+<li>Área comercial</li>
+<li>Jefatura financiera</li>
 </ul>
 </div>
-<div id="conclusión" class="section level1" number="7">
-<h1><span class="header-section-number">7</span> Conclusión</h1>
-<p>La solución permite mejorar la priorización y reducir riesgo en
-cartera.</p>
+<div id="decisiones-habilitadas" class="section level2" number="5.3">
+<h2><span class="header-section-number">5.3</span> Decisiones
+habilitadas</h2>
+<ul>
+<li>Priorización diaria de clientes para gestión de cobranza.</li>
+<li>Segmentación de cartera según severidad de mora.</li>
+<li>Identificación de clientes críticos.</li>
+<li>Seguimiento de exposición vencida y focos de gestión.</li>
+</ul>
+</div>
+</div>
+<div id="datos-de-entrada" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Datos de entrada</h1>
+<div id="archivo-de-clientes" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> Archivo de
+clientes</h2>
+<p>Variables esperadas:</p>
+<ul>
+<li>Rut o columna equivalente</li>
+<li>Cliente o nombre del cliente</li>
+<li>otros atributos comerciales, si estuvieran disponibles</li>
+</ul>
+</div>
+<div id="archivo-de-facturas" class="section level2" number="6.2">
+<h2><span class="header-section-number">6.2</span> Archivo de
+facturas</h2>
+<p>Variables esperadas:</p>
+<ul>
+<li>Rut</li>
+<li>Emisión</li>
+<li>Vencimiento</li>
+<li>Pago</li>
+<li>Total</li>
+</ul>
+</div>
+</div>
+<div id="metodología" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> Metodología</h1>
+<p>La construcción de la base analítica de cobranzas sigue las
+siguientes etapas:</p>
+<div class="grViz html-widget html-fill-item" id="htmlwidget-8153c9e1646d02acc138" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-8153c9e1646d02acc138">{"x":{"diagram":"\ndigraph flujo {\n\n  rankdir = LR;\n\n  node [shape = rectangle, style = filled, fillcolor = lightgrey];\n\n  A1 [label = \"Clientes\"];\n  A2 [label = \"Facturas\"];\n\n  B [label = \"Limpieza y estandarización\"];\n  C1 [label = \"Clasificación de facturas\"];\n  C2 [label = \"Cálculo de mora\"];\n  D [label = \"Integración\"];\n  E [label = \"Resumen por cliente\"];\n  F1 [label = \"KPI de cartera\"];\n  F2 [label = \"Score de riesgo\"];\n\n  A1 -> B;\n  A2 -> B;\n\n  B -> C1;\n  B -> C2;\n\n  C1 -> D;\n  C2 -> D;\n\n  D -> E;\n\n  E -> F1;\n  E -> F2;\n}\n","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<ul>
+<li>Lectura de archivos de clientes y facturas.</li>
+<li>Limpieza y estandarización de nombres de columnas.</li>
+<li>Conversión de fechas al formato fecha.</li>
+<li>Clasificación del estado de cada factura en:
+<ul>
+<li>Pagado</li>
+<li>Vencido</li>
+<li>Por vencer</li>
+</ul></li>
+<li>Cálculo de días de mora.</li>
+<li>Integración de clientes y facturas.</li>
+<li>Construcción de un resumen por cliente.</li>
+<li>Cálculo de KPIs operativos.</li>
+<li>Generación de score de riesgo.</li>
+<li>Clasificación de clientes en riesgo bajo, medio y alto.</li>
+<li>Exportación de tablas y visualizaciones.</li>
+</ul>
 </div>
 
 

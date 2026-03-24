@@ -73,15 +73,16 @@ library(DiagrammeR)
 
 grViz("
 digraph flujo {
-  rankdir = TB;
 
-  node [shape = rectangle, style = filled, fillcolor = lightblue];
+  rankdir = LR;
 
-  A [label = '1. Integración de datos'];
-  B [label = '2. Limpieza'];
-  C [label = '3. Cálculo de mora'];
-  D [label = '4. Score de riesgo'];
-  E [label = '5. Clasificación de clientes'];
+  node [shape = rectangle, style = filled, fontsize=11];
+
+  A [label = 'Integración de datos', fillcolor = lightblue];
+  B [label = 'Limpieza', fillcolor = lightblue];
+  C [label = 'Cálculo de mora', fillcolor = lightyellow];
+  D [label = 'Score de riesgo', fillcolor = orange];
+  E [label = 'Clasificación de clientes', fillcolor = white];
 
   A -> B -> C -> D -> E;
 }
