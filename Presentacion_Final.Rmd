@@ -1,83 +1,240 @@
 ---
-title: "Tesis Final: Cobranzas y Riesgo de Crédito"
+title: "Presentación Final: Base Analítica de Cobranzas"
 author: "Alejandra Julio Ramírez"
 output:
   ioslides_presentation:
     widescreen: true
+    smaller: false
 ---
 
-## Desafíos y solución propuesta
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE,
+  warning = FALSE,
+  message = FALSE
+)
 
-| Dimensión | Cobranzas (Base Analítica) | Riesgo de Crédito (ANN) |
-|----------|---------------------------|-------------------------|
-| Problema | Falta de visibilidad de la cartera | No existe clasificación de riesgo |
-| Objetivo | Gestionar mora y priorizar clientes | Predecir riesgo de default |
-| Datos | Facturación + clientes | Datos financieros |
-| Procesamiento | Estado de facturas<br>Días de mora<br>KPIs por cliente | Ratios financieros<br>Variable default<br>Modelo ANN |
-| Resultado | Base analítica<br>Ranking<br>Score | Probabilidad default<br>Clasificación |
-| Uso | Gestión de cobranza | Evaluación de riesgo |
+library(glue)
+```
 
-## Descripción de la solución
+```{css, echo=FALSE}
+.hero {
+  background: linear-gradient(135deg, #16324f, #245d85);
+  color: white;
+  padding: 25px;
+  border-radius: 15px;
+}
 
-| Elemento | Descripción |
-|----------|------------|
-| Propósito | Mejorar gestión de cobranzas e incorporar análisis predictivo |
-| Usuarios | Área comercial, cobranzas y jefatura financiera |
+.metric {
+  background: #f4f8fb;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  margin: 10px;
+}
 
+.metric-value {
+  font-size: 30px;
+  font-weight: bold;
+  color: #16324f;
+}
 
-### Flujo de la solución
-```{r diagrama_flujo, echo=FALSE}
+.quote {
+  background: #f8fafc;
+  border-left: 6px solid #4a5568;
+  padding: 20px;
+  font-size: 26px;
+}
+```
+
+```{r datos, include=FALSE}
+costo_implementacion <- "Bajo / desarrollo interno"
+recupero_estimado <- "Recupero de deuda previamente no gestionada"
+ahorro_tiempo <- "Reducción significativa de revisión manual"
+```
+
+## Problema de negocio
+
+```{r problema_circulo_vicioso, echo=FALSE}
 library(DiagrammeR)
 
 grViz("
-digraph flujo {
+digraph ciclo {
 
-  rankdir = LR;
+  graph [
+    layout = dot,
+    ranksep = 1.2,
+    nodesep = 0.9,
+    splines = true,
+    bgcolor = 'white'
+  ]
 
-  node [shape = rectangle, style = filled, fillcolor = lightgrey];
+  node [
+    shape = box,
+    style = 'rounded,filled',
+    fillcolor = '#f7fafc',
+    color = '#245d85',
+    penwidth = 2.2,
+    fontname = Helvetica,
+    fontsize = 22,
+    width = 2.8,
+    height = 1.1
+  ]
 
-  Datos1 [label = 'Datos Clientes'];
-  Datos2 [label = 'Datos Facturación'];
-  Datos3 [label = 'Datos Financieros'];
+  A [label = 'Gestión\\nmanual']
+  B [label = 'Pérdida de\\ntiempo']
+  C [label = 'Riesgo de no\\nrecuperar\\nla deuda']
 
-  Limpieza [label = 'Limpieza y preparación'];
-  Cobranzas [label = 'Base Analítica de Cobranzas'];
-  KPIs [label = 'KPIs y Scoring'];
-  ANN [label = 'Modelo ANN'];
-  Output [label = 'Outputs y Reportes'];
+  edge [
+    color = '#7b2cbf',
+    penwidth = 3,
+    arrowsize = 1.1
+  ]
 
-  Datos1 -> Limpieza;
-  Datos2 -> Limpieza;
-  Datos3 -> Limpieza;
+  {rank = same; A; B}
+  C
 
-  Limpieza -> Cobranzas;
-  Cobranzas -> KPIs;
-  KPIs -> ANN;
-  ANN -> Output;
+  A -> B
+  B -> C
+  C -> A
 }
 ")
 ```
 
-## MVP (Producto Mínimo Viable)
+## Solución
 
-### Componente 1: Cobranzas
-- Base analítica integrada
-- KPIs por cliente
-- Ranking de riesgo
-- Clientes prioritarios
+*El cambio principal es pasar de una revisión manual a una gestión priorizada.*
 
-### Componente 2: ANN
-- Modelo de clasificación binaria
-- Variables financieras
-- Predicción de default
-- Score de riesgo
+```{r problema_circulo, echo=FALSE}
+library(DiagrammeR)
 
-### Outputs generados
-- `resumen_cobranza.csv`
-- `clientes_prioritarios.csv`
-- `metricas_modelo_ann.csv`
-- `empresas_score_riesgo_ann.csv`
+grViz("
+digraph ciclo {
 
+  graph [
+    layout = dot,
+    ranksep = 1.2,
+    nodesep = 0.9,
+    splines = true,
+    bgcolor = 'white'
+  ]
+
+  node [
+    shape = box,
+    style = 'rounded,filled',
+    fillcolor = '#f7fafc',
+    color = '#245d85',
+    penwidth = 2.2,
+    fontname = Helvetica,
+    fontsize = 22,
+    width = 2.8,
+    height = 1.1
+  ]
+
+  A [label = 'Gana\\ Foco']
+  B [label = 'Trazabilidad']
+  C [label = 'Reducción\\ del no\\ Pago']
+
+  edge [
+    color = '#7b2cbf',
+    penwidth = 3,
+    arrowsize = 1.1
+  ]
+
+  {rank = same; A; B}
+  C
+
+  A -> B
+  B -> C
+  C -> A
+}
+")
+```
+
+## Impacto económico
+
+<div class="metric">
+<div class="metric-value">`r recupero_estimado`</div>
+Recupero esperado
+</div>
+
+<div class="metric">
+<div class="metric-value">`r ahorro_tiempo`</div>
+Eficiencia operativa
+</div>
+
+## Evidencia real
+
+- Ya en uso  
+- Retroalimentación operativa  
+- **Se observan recuperos de facturas que se daban por perdidas** 
+
+```{r grafico_recupero, echo=FALSE}
+library(ggplot2)
+library(dplyr)
+
+datos <- data.frame(
+  Estado = c("Recuperado", "Incobrable"),
+  Valor = c(75, 25)
+)
+
+ggplot(datos, aes(x = "", y = Valor, fill = Estado)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+  coord_polar(theta = "y") +
+  
+  geom_text(
+    aes(label = paste0(Valor, "%")),
+    position = position_stack(vjust = 0.5),
+    size = 8,
+    color = "white",
+    fontface = "bold"
+  ) +
+  
+  scale_fill_manual(
+    values = c(
+      "Recuperado" = "#2f855a",   # verde (bueno)
+      "Incobrable" = "#c53030"    # rojo (riesgo)
+    )
+  ) +
+  
+  labs(
+    title = "Facturas > 180 días de vencimiento",
+    subtitle = "Recuperación observada en la gestión"
+  ) +
+  
+  theme_void(base_size = 18) +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(
+      face = "bold",
+      size = 22,
+      color = "#16324f",
+      hjust = 0.5
+    ),
+    plot.subtitle = element_text(
+      size = 16,
+      hjust = 0.5
+    )
+  )
+```
 
 ## Cierre
 
+<div style="
+background: linear-gradient(135deg, #16324f, #245d85);
+color: white;
+padding: 40px;
+border-radius: 20px;
+text-align: center;
+margin-top: 40px;
+">
+
+<div style="font-size: 36px; font-weight: 700;">
+75% de recuperación en deuda > 180 días
+</div>
+
+<div style="margin-top: 20px; font-size: 24px;">
+Esto no es análisis, es impacto en caja.
+</div>
+
+</div>
