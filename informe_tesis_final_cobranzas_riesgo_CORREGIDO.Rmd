@@ -1,0 +1,51 @@
+---
+title: "Tesis Final del Diplomado: Base Analítica de Cobranzas"
+author: "Alejandra Julio Ramírez"
+date: "`r format(Sys.Date(), '%d-%m-%Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    theme: readable
+    df_print: paged
+  word_document: default
+params:
+  ruta_clientes: "data/clientes.xlsx"
+  ruta_facturas: "data/facturas.xlsx"
+  ruta_output: "output"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+# Resumen ejecutivo
+
+Este proyecto desarrolla una base analítica de cobranzas que permite priorizar clientes según riesgo de no pago.
+
+# Problema de negocio
+
+Actualmente no existe un mecanismo claro para priorizar la gestión de cobranzas.
+
+# Solución
+
+Se construye una base analítica que integra clientes y facturas, calcula mora y genera un ranking de prioridad.
+
+# Metodología
+
+- Integración de datos
+- Limpieza
+- Cálculo de mora
+- Score de riesgo
+- Clasificación de clientes
+
+# Outputs
+
+- resumen_cobranza.csv
+- clientes_prioritarios.csv
+- indicadores_cartera.csv
+
+# Conclusión
+
+La solución permite mejorar la priorización y reducir riesgo en cartera.
