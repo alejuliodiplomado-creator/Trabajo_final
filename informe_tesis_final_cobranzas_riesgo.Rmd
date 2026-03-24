@@ -1,7 +1,6 @@
 ---
-title: "Tesis Final del Diplomado: Base Analítica de Cobranzas y Clasificación de Riesgo de Crédito"
+title: "Tesis Final del Diplomado: Base Analítica de Cobranzas"
 author: "Alejandra Julio Ramírez"
-date: "`r format(Sys.Date(), '%d-%m-%Y')`"
 output:
   html_document:
     toc: true
@@ -13,439 +12,49 @@ output:
 params:
   ruta_clientes: "data/clientes.xlsx"
   ruta_facturas: "data/facturas.xlsx"
-  ruta_finanzas: "data/datos_completados.xlsx"
-  ejecutar_codigo: false
+  ruta_output: "output"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(
-  echo = TRUE,
-  message = FALSE,
-  warning = FALSE
-)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 ```
 
-# 1. Resumen ejecutivo
+# Resumen ejecutivo
 
-Este trabajo final integra dos desafíos reales del negocio:
+El presente trabajo final se enfoca en la construcción de una base analítica de cobranzas para apoyar la toma de decisiones en gestión de cartera. La solución integra datos de clientes y facturación, clasifica el estado de cada documento, calcula días de mora, resume la exposición por cliente y genera una priorización de gestión.
 
-1. **Construcción de una base analítica de cobranzas**, capaz de identificar el estado de las facturas, calcular días de mora y generar un resumen de riesgo por cliente a partir de datos operacionales de facturación y clientes.
-2. **Desarrollo de un modelo de redes neuronales artificiales (ANN)** para clasificar empresas según su nivel de riesgo de crédito, utilizando variables financieras y una variable objetivo observable de default.
+El resultado es un producto analítico orientado a negocio, diseñado para entregar visibilidad operativa y facilitar el foco del área de cobranzas y financiera sobre los casos más relevantes.
 
-La propuesta consolida y mejora entregables previos del diplomado en una sola solución empresarial orientada a la toma de decisiones. El primer componente entrega visibilidad operativa para el área comercial y de cobranzas. El segundo componente aporta una capa predictiva para anticipar riesgo de incumplimiento en cartera empresa.
+# Problema de negocio
 
-# 2. Contexto y problema de negocio
+*Actualmente no existe un mecanismo claro para priorizar la gestión de cobranzas.* que permita responder de manera rápida y consistente preguntas como:
 
-En la operación actual existen dos brechas relevantes:
+ - Qué clientes tienen mayor monto vencido
+ - Qué clientes concentran más facturas vencidas
+ - Cuáles deben gestionarse primero
+ - Cuál es el nivel de riesgo operativo de la cartera
 
-- No se dispone de una **base analítica unificada de cobranzas** que permita priorizar la gestión diaria en función de monto vencido, número de documentos en mora y antigüedad de la deuda.
-- Tampoco existe un **criterio estandarizado de clasificación de riesgo de crédito** para clientes empresa, lo que dificulta anticipar situaciones de incumplimiento y tomar decisiones preventivas.
+Actualmente esto genera una gestión más manual, menor trazabilidad y menor capacidad de priorización. Frente a esta necesidad, se desarrolla una solución en R que transforma datos operacionales en información accionable para negocio.
 
-Estas brechas generan fricción operativa, menor trazabilidad y decisiones menos oportunas tanto para el área de cobranzas como para la gestión comercial.
 
-# 3. Objetivos
+# Solución
 
-## 3.1 Objetivo general
+Se construye una base analítica que integra clientes y facturas, calcula mora y genera un ranking de prioridad.
 
-Diseñar una solución analítica en **R** que integre una base analítica de cobranzas y un modelo ANN de clasificación de riesgo de crédito, con el fin de mejorar la priorización de clientes, la gestión de mora y el soporte a la toma de decisiones financieras.
+# Metodología
 
-## 3.2 Objetivos específicos
+- Integración de datos
+- Limpieza
+- Cálculo de mora
+- Score de riesgo
+- Clasificación de clientes
 
-1. Integrar y depurar datos de clientes y facturación para construir una base operativa de cobranzas.
-2. Identificar el estado de cada factura y calcular días de mora a nivel documental.
-3. Generar un resumen por cliente con métricas de cartera y un score de riesgo operativo.
-4. Traducir a **R** el modelo ANN desarrollado originalmente en Python.
-5. Construir variables financieras relevantes y una variable objetivo observable de default.
-6. Entrenar y evaluar una red neuronal de clasificación binaria para riesgo de crédito.
-7. Proponer indicadores KPI, lineamientos de despliegue y monitoreo para ambos componentes.
+# Outputs
 
-# 4. Alcance de la solución
+- resumen_cobranza.csv
+- clientes_prioritarios.csv
+- indicadores_cartera.csv
 
-La solución final considera dos productos analíticos complementarios:
+# Conclusión
 
-## 4.1 Producto 1: Base analítica de cobranzas
-
-Permite responder preguntas como:
-
-- ¿Qué clientes tienen mayor monto vencido?
-- ¿Qué clientes concentran más facturas vencidas?
-- ¿Dónde conviene enfocar la gestión hoy?
-- ¿Cómo se distribuye la cartera por tramos de mora?
-
-## 4.2 Producto 2: Modelo ANN de riesgo de crédito
-
-Permite estimar, a partir de información financiera, la probabilidad de default de una empresa, entendiendo default como una condición observable asociada a mora promedio superior a 30 días.
-
-# 5. Propósito, usuarios y decisiones habilitadas
-
-## 5.1 Propósito
-
-Transformar datos operacionales y financieros en insumos analíticos accionables para mejorar la gestión de cobranza y la evaluación del riesgo de crédito.
-
-## 5.2 Usuarios
-
-- **Área comercial**
-- **Área de cobranzas**
-- **Jefatura financiera**
-- **Analistas de negocio / datos**
-
-## 5.3 Decisiones habilitadas
-
-- Priorización diaria de clientes para gestión de cobranza.
-- Segmentación de cartera según severidad de mora.
-- Detección temprana de clientes con mayor probabilidad de incumplimiento.
-- Generación de insumos para seguimiento, comité de riesgo y revisión de condiciones comerciales.
-
-# 6. Datos de entrada
-
-## 6.1 Datos para base analítica de cobranzas
-
-### Archivo de clientes
-Variables esperadas:
-
-- `RUT` o columna equivalente
-- `RazonSocial` o nombre del cliente
-- Plan o atributos comerciales opcionales
-- Correo o contacto, si estuviera disponible
-
-### Archivo de facturas
-Variables esperadas:
-
-- `RUT`
-- `Folio`
-- `Emision`
-- `Vencimiento`
-- `FechaPago`
-- `TotalFacturado`
-
-## 6.2 Datos para modelo ANN
-
-Variables financieras utilizadas en la base adjunta `datos_completados.xlsx`:
-
-- `Activos_Corrientes`
-- `Pasivos_Corrientes`
-- `Deuda_Total`
-- `Activos_Totales`
-- `Utilidad_Neta`
-- `EBIT`
-- `Gastos_Intereses`
-- `Ingresos_Ventas`
-- `Ventas_Pasadas`
-- `Dias_Mora_Promedio`
-- además de campos identificadores como `Razon_Social` y `RUT`.
-
-# 7. Metodología
-
-## 7.1 Metodología del componente de cobranzas
-
-La construcción de la base analítica de cobranzas sigue las siguientes etapas:
-
-1. Lectura de archivos de clientes y facturas.
-2. Limpieza y estandarización de nombres de columnas.
-3. Normalización de RUT.
-4. Conversión de fechas al formato fecha.
-5. Conversión de montos a numéricos.
-6. Unión de ambas fuentes.
-7. Cálculo del estado de cada factura:
-   - Pagada
-   - Vencida
-   - Por vencer
-8. Cálculo de días de mora.
-9. Construcción de un resumen por cliente.
-10. Generación de un score de riesgo operativo y su clasificación.
-11. Exportación de tablas y visualizaciones.
-
-## 7.2 Variables de salida del componente de cobranzas
-
-A nivel factura:
-
-- Estado de factura
-- Días de mora
-- Bucket de antigüedad de deuda
-
-A nivel cliente:
-
-- Número de facturas
-- Número de facturas vencidas
-- Monto total facturado
-- Monto vencido
-- Días de mora promedio
-- Días de mora máximo
-- Score de riesgo operativo
-- Clasificación de riesgo
-
-## 7.3 Metodología del componente ANN
-
-La versión original del modelo fue desarrollada en Python y luego traducida a R para esta tesis. El flujo metodológico es el siguiente:
-
-1. Carga y limpieza de la base financiera.
-2. Conversión a numérico de variables críticas.
-3. Construcción de ratios financieros:
-   - Liquidez corriente
-   - Deuda sobre activos
-   - ROA
-   - Cobertura de intereses
-   - Ventas
-   - Crecimiento de ventas
-4. Definición de variable objetivo:
-   - `default = 1` si `Dias_Mora_Promedio > 30`
-   - `default = 0` en caso contrario
-5. Separación entrenamiento/prueba con conservación de proporciones.
-6. Escalamiento de variables.
-7. Entrenamiento de una ANN con arquitectura 16-8-1.
-8. Uso de `early stopping` para evitar sobreajuste.
-9. Evaluación mediante accuracy, precision, recall y matriz de confusión.
-10. Cálculo de score de riesgo para toda la base.
-
-## 7.4 Integración de la solución
-
-La lógica integradora del trabajo consiste en que ambos componentes responden a distintas capas del mismo problema:
-
-- **Capa operativa**: gestión de cartera vencida y priorización de cobranza.
-- **Capa analítica/predictiva**: evaluación anticipada del riesgo de crédito.
-
-De esta manera, el proyecto no presenta dos piezas aisladas, sino una única propuesta de valor para la organización.
-
-# 7.5 Cronograma del proyecto
-
-A continuación se presenta una planificación general del desarrollo del proyecto:
-
-```{r cronograma, echo=FALSE}
-library(ggplot2)
-library(dplyr)
-
-cronograma <- data.frame(
-  Etapa = c(
-    "Levantamiento de requerimientos",
-    "Construcción base cobranzas",
-    "Generación de KPIs y scoring",
-    "Desarrollo modelo ANN (Python)",
-    "Migración modelo ANN a R",
-    "Integración del pipeline",
-    "Validación y ajustes",
-    "Documentación final"
-  ),
-  Inicio = as.Date(c(
-    "2025-11-01","2025-11-10","2025-11-20","2025-12-01",
-    "2025-12-10","2025-12-20","2026-01-05","2026-01-15"
-  )),
-  Fin = as.Date(c(
-    "2025-11-10","2025-11-20","2025-11-30","2025-12-10",
-    "2025-12-20","2025-12-30","2026-01-15","2026-01-25"
-  ))
-)
-
-#ordenar por fecha y fijar niveles
-cronograma <- cronograma %>%
-  arrange(desc(Inicio)) %>%
-  mutate(Etapa = factor(Etapa, levels = Etapa))
-
-ggplot(cronograma) +
-  geom_segment(aes(x = Inicio, xend = Fin, y = Etapa, yend = Etapa),
-               linewidth = 6) +
-  labs(
-    title = "Cronograma del Proyecto",
-    x = "Fecha",
-    y = "Etapas"
-  ) +
-  theme_minimal()
-```
-
-# 7.6 Diagrama de flujo de la solución
-
-El siguiente diagrama representa el flujo completo del pipeline analítico desarrollado:
-
-```{r diagrama_flujo, echo=FALSE}
-library(DiagrammeR)
-
-grViz("
-digraph flujo {
-
-  rankdir = LR;
-
-  node [shape = rectangle, style = filled, fillcolor = lightgrey];
-
-  Datos1 [label = 'Datos Clientes'];
-  Datos2 [label = 'Datos Facturación'];
-  Datos3 [label = 'Datos Financieros'];
-
-  Limpieza [label = 'Limpieza y preparación'];
-  Cobranzas [label = 'Base Analítica de Cobranzas'];
-  KPIs [label = 'KPIs y Scoring'];
-  ANN [label = 'Modelo ANN'];
-  Output [label = 'Outputs y Reportes'];
-
-  Datos1 -> Limpieza;
-  Datos2 -> Limpieza;
-  Datos3 -> Limpieza;
-
-  Limpieza -> Cobranzas;
-  Cobranzas -> KPIs;
-  KPIs -> ANN;
-  ANN -> Output;
-}
-")
-```
-
-# 8. MVP propuesto
-
-## 8.1 MVP de cobranzas
-
-El MVP considera como salidas:
-
-- `base_cobranza.csv`
-- `resumen_cobranza.csv`
-- `top10_monto_vencido.png`
-- `top10_facturas_vencidas.csv`
-- `indicadores_cartera.csv`
-
-## 8.2 MVP del modelo ANN
-
-El MVP considera como salidas:
-
-- `metricas_modelo_ann.csv`
-- `matriz_confusion.csv`
-- `resultados_test_ann.csv`
-- `empresas_score_riesgo_ann.csv`
-- `historial_entrenamiento_ann.png`
-- `modelo_ann_riesgo.keras`
-
-# 9. Resultados esperados
-
-## 9.1 Resultados esperados en cobranzas
-
-Se espera disponer de una cartera analítica priorizada que permita:
-
-- identificar clientes críticos,
-- focalizar la gestión diaria,
-- cuantificar exposición vencida,
-- generar reportabilidad periódica.
-
-## 9.2 Resultados esperados en riesgo de crédito
-
-Se espera obtener un modelo capaz de clasificar empresas en función de su riesgo de default a partir de patrones contenidos en sus variables financieras.
-
-El foco del MVP no está en una optimización exhaustiva del modelo, sino en demostrar una metodología reproducible, interpretable para negocio y técnicamente consistente.
-
-# 10. KPIs del producto de datos
-
-A continuación se propone una estructura de KPI basada en niveles de madurez del producto analítico.
-
-## 10.1 KPIs IL3: disponibilidad y calidad
-
-| KPI | Definición | Meta inicial |
-|:---|:---|:---|
-| Cobertura de clientes con RUT válido | % de clientes utilizables en el proceso | > 95% |
-| Cobertura de facturas con fechas válidas | % de documentos con fechas parseadas correctamente | > 98% |
-| Completitud de variables financieras críticas | % de registros sin NA en variables del modelo ANN | > 90% |
-| Columnas documentadas | % de campos relevantes documentados | 100% |
-
-## 10.2 KPIs IL4: implementación y automatización
-
-| KPI | Definición | Meta inicial |
-|:---|:---|:---|
-| Tasa de ejecución exitosa del pipeline | % de ejecuciones sin error | > 95% |
-| Tiempo de ejecución | Duración total del proceso | < 10 min |
-| Actualización de outputs | Frecuencia efectiva de refresco | Diaria o semanal |
-| Disponibilidad de score ANN | % de ejecuciones con score generado | > 95% |
-
-## 10.3 KPIs IL5: impacto estratégico
-
-| KPI | Definición | Meta inicial |
-|:---|:---|:---|
-| % de gestión dirigida por priorización analítica | Casos gestionados usando ranking de riesgo | > 70% |
-| Reducción del monto vencido crítico | Variación de cartera 90+ días | Tendencia a la baja |
-| Uso del score de riesgo en decisiones comerciales | % de evaluaciones con score incorporado | > 50% |
-| Mejora de recuperación sobre cartera priorizada | Recuperación de clientes foco vs no foco | Superior al grupo control |
-
-# 11. Despliegue y monitoreo
-
-## 11.1 Despliegue propuesto
-
-Se recomienda un despliegue inicial simple y realista:
-
-1. Carpeta `data/` con archivos de entrada actualizados.
-2. Ejecución de scripts en R mediante `Rscript`.
-3. Generación de salidas en `output/`.
-4. Uso por parte de cobranzas/comercial a través de archivos o reportes.
-
-## 11.2 Monitoreo técnico
-
-- errores de ejecución,
-- tiempo de proceso,
-- columnas faltantes,
-- % de valores inválidos,
-- desbalance extremo de clases en el modelo.
-
-## 11.3 Monitoreo de negocio
-
-- evolución de monto vencido,
-- clientes de alto riesgo,
-- distribución por buckets de mora,
-- tendencia de score ANN,
-- efectividad de la gestión de cartera priorizada.
-
-# 12. Reproducibilidad
-
-Los archivos entregados con esta tesis son:
-
-- `informe_tesis_final_cobranzas_riesgo.Rmd`
-- `presentacion_tesis_final_cobranzas_riesgo.Rmd`
-- `01_base_analitica_cobranzas.R`
-- `02_modelo_ann_riesgo_credito.R`
-- `run_tesis_final.R`
-
-## 12.1 Ejecución sugerida
-
-```{r, eval=FALSE}
-source("01_base_analitica_cobranzas.R")
-source("02_modelo_ann_riesgo_credito.R")
-
-resultado_cobranza <- construir_base_cobranzas(
-  path_clientes = params$ruta_clientes,
-  path_facturas = params$ruta_facturas,
-  output_dir = "output"
-)
-
-resultado_ann <- ejecutar_modelo_ann(
-  path_datos = params$ruta_finanzas,
-  output_dir = "output"
-)
-```
-
-# 13. Discusión y limitaciones
-
-Este trabajo presenta algunas limitaciones propias del alcance MVP:
-
-- El score de cobranzas no representa una probabilidad estadística de incumplimiento.
-- El target del modelo ANN depende de una regla observable de mora promedio mayor a 30 días.
-- No se cuenta aún con variables enriquecidas de comportamiento histórico, contacto, pagos parciales o renegociaciones.
-- La validación se basa en una muestra interna y no reemplaza una política formal de crédito.
-
-Aun así, la propuesta constituye una mejora concreta y aplicable respecto de la situación inicial, al integrar analítica descriptiva y predictiva sobre un problema de negocio real.
-
-# 14. Conclusiones
-
-La tesis final logra articular en una sola solución dos desafíos relevantes de la empresa: la gestión operativa de cobranza y la clasificación predictiva del riesgo de crédito.
-
-Desde la perspectiva del diplomado, el proyecto demuestra integración de aprendizajes previos, aplicación sobre un caso real y capacidad de implementación en R. Desde la perspectiva del negocio, entrega herramientas accionables para mejorar foco, trazabilidad y soporte analítico en decisiones de cartera.
-
-# 15. Anexos
-
-## 15.1 Código del proyecto
-
-Los scripts entregados contienen:
-
-- funciones reutilizables,
-- manejo flexible de nombres de columnas,
-- exportación de outputs,
-- comentarios explicativos,
-- una versión en R del modelo ANN originalmente implementado en Python.
-
-## 15.2 Próximas mejoras
-
-- incorporar dashboard en Shiny o Power BI,
-- agregar historial de pagos y recuperación,
-- recalibrar umbrales de riesgo con evidencia histórica,
-- comparar ANN con modelos benchmark como regresión logística, random forest o XGBoost,
-- incorporar monitoreo de drift y estabilidad del score.
+La solución permite mejorar la priorización y reducir riesgo en cartera.
