@@ -105,17 +105,15 @@ digraph ciclo {
 
 *El cambio principal es pasar de una revisión manual a una gestión priorizada.*
 
-```{r problema_circulo, echo=FALSE}
+```{r solucion_bloques, echo=FALSE}
 library(DiagrammeR)
 
 grViz("
-digraph ciclo {
+digraph bloques {
 
   graph [
     layout = dot,
-    ranksep = 1.2,
-    nodesep = 0.9,
-    splines = true,
+    rankdir = LR,
     bgcolor = 'white'
   ]
 
@@ -135,18 +133,7 @@ digraph ciclo {
   B [label = 'Trazabilidad']
   C [label = 'Reducción\\ del no\\ Pago']
 
-  edge [
-    color = '#7b2cbf',
-    penwidth = 3,
-    arrowsize = 1.1
-  ]
-
-  {rank = same; A; B}
-  C
-
-  A -> B
-  B -> C
-  C -> A
+  {rank = same; A; B; C}
 }
 ")
 ```
